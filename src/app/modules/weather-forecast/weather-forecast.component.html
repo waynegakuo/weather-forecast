@@ -1,0 +1,19 @@
+<div class="h-screen flex flex-col lg:flex-row">
+  <div class="bg-gradient-to-r from-gray-500 to-gray-800 shadow-2xl">
+    <!-- SEARCH BAR -->
+    <form [formGroup]="locationForm" class="flex my-3 px-4" (ngSubmit)="getGeolocation()">
+      <input type="text"
+        class="w-full rounded-l py-1.5 px-4 outline-none focus:bg-indigo-100 focus:transition ease-in duration-150"
+        placeholder="City" formControlName="cityName">
+      <button type="submit" class="bg-gray-900 rounded-r px-4 text-white">Search</button>
+    </form>
+
+    <!-- SIDEBAR -->
+    <app-sidebar [weatherForecast]="weatherForecastData" [imageURL]="imageURL" [location]="locationResult"
+      [currentTime]="currentTime" [weatherDescription]="weatherDesc" class="w-full lg:w-2/12 px-6 text-white">
+    </app-sidebar>
+  </div>
+  <app-weather-details [weatherForecast]="weatherForecastData" [weekForecastData]="weekForecast"
+    class="w-full bg-gradient-to-r from-gray-500 to-gray-800">
+  </app-weather-details>
+</div>

@@ -1,0 +1,30 @@
+<!-- WEATHER VIEW -->
+<div>
+  <div class="flex flex-col space-y-6 items-center content-center justify-center">
+    <img [src]="imageURL" class="flex content-center justify-center w-4/6" alt="Weather Image">
+
+    <span class="text-gray-300 font-semibold">{{weatherDescription | titlecase}}</span>
+
+    <div class="flex flex-row content-center justify-center">
+      <span class="text-8xl">{{weatherForecast.temperature | number:'1.0-0'}}</span>
+      <span class="flex align-top text-4xl font-poppins">&#8451;</span>
+    </div>
+  </div>
+
+
+  <div class="divide-y divide-gray-300 space-y-8 px-4">
+    <!-- DATE -->
+    <div class="flex flex-row mt-6 content-center justify-center">
+      <span class="font-semibold text-2xl">{{currentTime | date: 'EEE'}},</span>
+      <span class="text-gray-300 ml-2 text-2xl">{{currentTime | date: 'h:mm a'}}</span>
+    </div>
+
+    <!-- WEATHER EXTRAS -->
+    <div class="flex flex-col py-4 items-center content-center">
+      <div class="flex md:flex-row">
+        <span class="p-4 text-xl font-semibold text-center">{{location}}</span>
+      </div>
+    </div>
+  </div>
+
+</div>

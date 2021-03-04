@@ -1,0 +1,11 @@
+<div class="flex flex-col">
+  <span class="text-lg font-black ml:0 p-2 lg:ml-28 text-center md:text-left text-white mt-2">Week's Forecast</span>
+  <div class="flex flex-col items-center justify-center md:space-x-5 md:flex-row py-5 px-8 md:px-14">
+    <div
+      class="flex flex-col items-center justify-center w-full h-60 md:w-32 md:h-36 p-2 mb-2 rounded-lg from-gray-50 to-gray-800 shadow-lg"
+      *ngFor="let dailyForecast of weekForecast | slice:0:7">
+
+      <app-small-forecast-card [dailyForecast]="dailyForecast"></app-small-forecast-card>
+    </div>
+  </div>
+</div>
