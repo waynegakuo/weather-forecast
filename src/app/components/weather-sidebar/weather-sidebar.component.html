@@ -1,0 +1,21 @@
+<div class="flex flex-col items-center px-4 pt-4" animate.enter="animate-scale-in">
+  <span class="text-7xl drop-shadow-lg" aria-hidden="true">{{ weather().current.icon }}</span>
+  <p class="mt-2 text-center text-sm font-medium text-sky-100/90">
+    {{ weather().current.description | titlecase }}
+  </p>
+
+  <div class="mt-4 flex items-start gap-1">
+    <span class="font-display text-7xl font-bold tracking-tight text-white">
+      {{ weather().current.temperature | number: '1.0-0' }}
+    </span>
+    <span class="mt-2 text-2xl font-medium text-slate-300">°C</span>
+  </div>
+
+  <div class="mt-6 w-full border-t border-white/10 pt-6 text-center">
+    <p class="font-display text-lg font-semibold text-white">{{ weather().locationLabel }}</p>
+    <p class="mt-1 text-sm text-slate-300">
+      {{ weather().current.observedAt | date: 'EEE, MMM d · h:mm a' }}
+    </p>
+    <p class="mt-1 text-xs text-slate-400">{{ weather().timezone }}</p>
+  </div>
+</div>

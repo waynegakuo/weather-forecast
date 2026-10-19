@@ -1,0 +1,9 @@
+<p class="text-xs font-semibold uppercase tracking-wide text-slate-300">
+  {{ day().date | date: 'EEE' }}
+</p>
+<p class="text-[10px] text-slate-500">{{ day().date | date: 'MMM d' }}</p>
+<span class="my-3 block text-4xl" [attr.aria-label]="day().description">{{ day().icon }}</span>
+<div class="flex items-center justify-center gap-1 text-sm font-semibold">
+  <span>{{ day().tempMax | number: '1.0-0' }}°</span>
+  <span class="font-normal text-slate-400">{{ day().tempMin | number: '1.0-0' }}°</span>
+</div>

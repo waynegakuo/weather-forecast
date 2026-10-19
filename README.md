@@ -1,47 +1,43 @@
 # Weather Forecast
 
+A modern Angular weather app: search any city, see current conditions and a 7-day outlook.
+
 ![Weather Forecast](src/assets/screenshots/site.png)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.0.
+## Stack
 
-The Weather Forecast App uses the [OpenWeather API](https://openweathermap.org/) to provide a city's current weather forecast & a 7-Day weather forecast. The app also uses [Here API](https://www.here.com/) to provide geo-coordinates of a known address, place, locality or administrative area, even if the query is incomplete or partly incorrect.
+- **Angular 22.2** — standalone components, signal forms, zoneless change detection
+- **[Open-Meteo](https://open-meteo.com/)** — free geocoding + forecast APIs (no API keys)
+- **Tailwind CSS v4**
 
-_It is very important to have an OpenWeather & HERE Geocoding AP Keys_
+Previously this project used OpenWeather + HERE with HTTP interceptors and API keys. That flow is replaced by a single service that calls Open-Meteo directly.
 
-- [OpenWeather API Documentation](https://openweathermap.org/api/one-call-api)
-- [Here API Geocoding Documentation](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics/endpoint-geocode-brief.html)
+## Development
 
-## API Keys
+```bash
+npm install
+npm start
+```
 
-Inside the `api.interceptor.ts` in the `Interceptors` folder (`src > app > interceptors`), replace the `YOUR_GEOCODE_API_KEY` & `YOUR_OPENWEATHER_API_KEY` sections with their respective API keys which you would have generated.
-
-![API Keys Screenshot](src/assets/screenshots/api_keys.png)
-
-## Progressive Web App (PWA)
-
-This web app is PWA-enabled; you can install it on your phone if you wish to do so. Read more about PWA at [PWAFire](https://pwafire.org/)
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Open [http://localhost:4200](http://localhost:4200).
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```bash
+npm run build
+```
 
-## Running unit tests
+Output is in `dist/weatherapp`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## API notes
 
-## Running end-to-end tests
+| Step | Endpoint |
+|------|----------|
+| Geocode city | `https://geocoding-api.open-meteo.com/v1/search` |
+| Forecast | `https://api.open-meteo.com/v1/forecast` |
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Open-Meteo is free for non-commercial use; see their [terms](https://open-meteo.com/en/terms) for production traffic limits.
 
-## Further help
+## Author
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
-# weather-forecast
+Built with care by [Wayne Gakuo](https://github.com/waynegakuo).
