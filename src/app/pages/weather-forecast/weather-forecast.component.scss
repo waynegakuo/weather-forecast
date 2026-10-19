@@ -1,0 +1,50 @@
+.weather-scene {
+  position: relative;
+  isolation: isolate;
+}
+
+.weather-scene__photo {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-size: cover;
+  background-position: center;
+}
+
+.weather-scene__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  transition: background 0.8s ease;
+}
+
+.weather-scene__layout {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.weather-nav {
+  min-height: auto;
+
+  @media (min-width: 1024px) {
+    width: min(22rem, 42vw);
+    min-width: 18rem;
+    max-width: 26rem;
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    overflow-y: auto;
+  }
+
+  @media (min-width: 1280px) {
+    width: 26rem;
+    max-width: 30rem;
+  }
+}
+
+.weather-scene__layout > main {
+  flex: 1;
+  min-width: 0;
+}

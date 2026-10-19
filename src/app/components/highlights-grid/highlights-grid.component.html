@@ -1,0 +1,32 @@
+<section aria-labelledby="highlights-heading">
+  <h2 id="highlights-heading" class="font-display text-lg font-bold text-white">Today’s highlights</h2>
+
+  <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+    @for (item of stats(current()); track item.label; let i = $index) {
+      <article [class]="'glass-card animate-fade-up rounded-2xl p-5 stagger-' + (i + 1)">
+        <div class="flex items-start justify-between gap-2">
+          <p class="text-sm font-medium text-slate-300">{{ item.label }}</p>
+          <span class="text-xl" aria-hidden="true">{{ item.icon }}</span>
+        </div>
+        <p class="font-display mt-3 text-3xl font-bold text-white">
+          {{ item.value }}<span class="ml-1 text-base font-normal text-slate-400">{{ item.unit }}</span>
+        </p>
+      </article>
+    }
+  </div>
+
+  <div class="mt-4 grid gap-3 sm:grid-cols-2">
+    <article class="glass-card rounded-2xl p-5">
+      <p class="text-sm font-medium text-slate-300">Sunrise</p>
+      <p class="font-display mt-2 text-2xl font-semibold text-white">
+        {{ current().sunrise | date: 'h:mm a' }}
+      </p>
+    </article>
+    <article class="glass-card rounded-2xl p-5">
+      <p class="text-sm font-medium text-slate-300">Sunset</p>
+      <p class="font-display mt-2 text-2xl font-semibold text-white">
+        {{ current().sunset | date: 'h:mm a' }}
+      </p>
+    </article>
+  </div>
+</section>

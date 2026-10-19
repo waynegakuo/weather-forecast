@@ -1,0 +1,64 @@
+<div class="weather-scene min-h-screen text-white">
+  <div
+    class="weather-scene__photo"
+    [style.background-image]="'url(' + backgroundImage() + ')'"
+    aria-hidden="true"
+  ></div>
+  <div class="weather-scene__overlay" [style.background]="sceneOverlay()" aria-hidden="true"></div>
+
+  <div class="weather-scene__layout flex min-h-screen w-full flex-col lg:flex-row">
+    <aside class="weather-nav glass-shell flex w-full flex-col lg:shrink-0 lg:border-r lg:border-white/10">
+      <header class="glass-header px-5 py-6">
+        <p class="font-display text-xs font-semibold uppercase tracking-[0.2em] text-sky-100/80">
+          Weather Forecast
+        </p>
+        <h1 class="font-display mt-1 text-2xl font-bold">Find your sky</h1>
+      </header>
+
+      <form class="glass-block px-5 py-4" (submit)="$event.preventDefault(); search()">
+        <label class="mb-2 block text-sm font-medium text-slate-100/90" for="city">City or town</label>
+        <div class="flex gap-2">
+          <input
+            id="city"
+            type="text"
+            class="glass-input w-full rounded-2xl px-4 py-2.5 outline-none"
+            placeholder="e.g. Mombasa, Nairobi, Berlin"
+            [formField]="cityForm.cityName"
+            autocomplete="address-level2"
+          />
+          <button type="submit" class="glass-button shrink-0 rounded-2xl px-4 py-2.5 text-sm font-semibold" [disabled]="loading() || !cityForm.cityName().value().trim()">
+            @if (loading()) {
+              <span class="inline-block animate-pulse-soft">…</span>
+            } @else {
+              Search
+            }
+          </button>
+        </div>
+        @if (errorMessage(); as err) {
+          <p class="mt-3 rounded-xl bg-rose-500/20 px-3 py-2 text-sm text-rose-100 backdrop-blur-sm" role="alert" animate.enter="animate-fade-up">
+            {{ err }}
+          </p>
+        }
+      </form>
+
+      @if (loading() && !weather()) {
+        <div class="flex flex-1 flex-col items-center justify-center px-6 pb-10 text-slate-200">
+          <div class="glass-card rounded-2xl px-6 py-4 text-sm">Loading {{ cityForm.cityName().value() }}…</div>
+        </div>
+      } @else if (weather(); as data) {
+        <app-weather-sidebar [weather]="data" class="flex-1 px-3 pb-6" />
+      }
+    </aside>
+
+    <main class="flex flex-1 flex-col">
+      @if (weather(); as data) {
+        <app-weather-details-panel [weather]="data" class="flex-1" />
+      } @else if (!loading()) {
+        <div class="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-slate-300" animate.enter="animate-fade-in">
+          <p class="font-display text-lg">Your forecast lives here</p>
+          <p class="max-w-md text-center text-sm text-slate-400">Search a city or wait for the default location to load.</p>
+        </div>
+      }
+    </main>
+  </div>
+</div>
