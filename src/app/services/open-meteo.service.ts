@@ -45,7 +45,7 @@ export class OpenMeteoService {
       map((body) => {
         const hit = body.results?.[0];
         if (!hit) {
-          throw new Error(`No station found for "${query.trim()}". Try another city or spelling.`);
+          throw new Error(`No location found for "${query.trim()}". Try another city or spelling.`);
         }
         return hit;
       }),
@@ -122,14 +122,14 @@ export class OpenMeteoService {
   loadCoordinatesWeather(
     latitude: number,
     longitude: number,
-    customName = 'Current Coordinates',
+    customName = 'Current Location',
   ): Observable<WeatherBundle> {
     const syntheticPlace: GeocodeResult = {
       id: 0,
       name: customName,
       latitude,
       longitude,
-      country: 'GPS Telemetry',
+      country: 'Local Coordinates',
       country_code: 'GPS',
       timezone: 'auto',
     };
@@ -178,7 +178,7 @@ export class OpenMeteoService {
       return {
         date: new Date(`${day}T12:00:00`),
         weatherCode: code,
-        description: meta.description,
+        description: meta.shortLabel,
         icon: meta.icon,
         tempMax: raw.daily.temperature_2m_max[index],
         tempMin: raw.daily.temperature_2m_min[index],
@@ -196,6 +196,7 @@ export class OpenMeteoService {
     return {
       locationName: place.name,
       regionLabel: regionParts.join(', '),
+      country: place.country,
       countryCode: (place.country_code ?? '').toUpperCase(),
       locationLabel: this.placeLabel(place),
       latitude: raw.latitude,
@@ -207,6 +208,17 @@ export class OpenMeteoService {
       hourly,
       daily,
     };
+  }
+
+  private formatHourAmPm(isoString: string): string {
+    const hourStr = isoString.split('T')[1]?.slice(0, 2);
+    const hour24 = Number(hourStr);
+    if (Number.isNaN(hour24)) {
+      return '12 PM';
+    }
+    const suffix = hour24 >= 12 ? 'PM' : 'AM';
+    const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+    return `${hour12} ${suffix}`;
   }
 
   private extractNext24Hours(raw: OpenMeteoForecastResponse): HourlyForecastView[] {
@@ -232,11 +244,10 @@ export class OpenMeteoService {
       const iso = hourlyRaw.time[idx];
       const code = hourlyRaw.weather_code[idx] ?? raw.current.weather_code;
       const meta = weatherFromCode(code);
-      const hourPart = iso.split('T')[1]?.slice(0, 5) ?? '00:00';
 
       result.push({
         time: new Date(iso),
-        hourLabel: offset === 0 ? 'Now' : hourPart,
+        hourLabel: offset === 0 ? 'Now' : this.formatHourAmPm(iso),
         isNow: offset === 0,
         temperature:
           offset === 0 ? raw.current.temperature_2m : (hourlyRaw.temperature_2m[idx] ?? 0),

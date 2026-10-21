@@ -26,8 +26,8 @@ export class ForecastDayCardComponent {
   readonly enterClass = computed(() => {
     const stagger = Math.min(this.index(), 6) + 1;
     const active = this.selected()
-      ? 'ring-1 ring-sky-400/50 bg-white/[0.09]'
-      : 'bg-white/[0.03] hover:bg-white/[0.06]';
-    return `instrument-subcard animate-fade-up stagger-${stagger} ${active} block rounded-2xl p-3.5 text-center transition-all cursor-pointer`;
+      ? 'border-white/[0.16] bg-white/[0.075] shadow-md'
+      : 'border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.055]';
+    return `animate-fade-up stagger-${stagger} ${active} flex flex-col items-center justify-between rounded-[1.25rem] border px-2 py-3 text-center transition-all cursor-pointer select-none`;
   });
 }

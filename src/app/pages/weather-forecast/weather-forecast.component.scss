@@ -1,101 +1,29 @@
-.weather-scene {
-  position: relative;
+.weather-app-viewport {
   isolation: isolate;
-  overflow-x: hidden;
+  background: #18191d;
 }
 
 .weather-scene__photo {
   position: fixed;
   inset: 0;
-  z-index: -5;
+  z-index: -2;
   background-size: cover;
   background-position: center;
-  opacity: 0.24;
-  filter: saturate(1.15) contrast(1.05);
-  transition: background-image 1s ease;
+  transition: background-image 0.9s ease;
+  filter: saturate(0.85) contrast(1.05);
 }
 
 .weather-scene__overlay {
   position: fixed;
   inset: 0;
-  z-index: -4;
-  transition: background 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.weather-scene__orb {
-  position: fixed;
-  border-radius: 9999px;
-  filter: blur(110px);
-  pointer-events: none;
-  z-index: -3;
-  transition: background 1.2s ease;
-}
-
-.weather-scene__orb--primary {
-  top: -12%;
-  left: -8%;
-  width: min(46rem, 75vw);
-  height: min(46rem, 75vw);
-}
-
-.weather-scene__orb--secondary {
-  bottom: -15%;
-  right: -6%;
-  width: min(42rem, 70vw);
-  height: min(42rem, 70vw);
-}
-
-.weather-scene__rain {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  opacity: 0.22;
-  background-image: repeating-linear-gradient(
-    108deg,
-    transparent 0px,
-    transparent 38px,
-    rgba(186, 230, 253, 0.22) 38px,
-    rgba(186, 230, 253, 0.02) 40px
-  );
-  background-size: 200% 200%;
-  animation: rain-drift 1.8s linear infinite;
-}
-
-.weather-scene__stars {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  opacity: 0.45;
-  background-image:
-    radial-gradient(1.5px 1.5px at 14% 18%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(1px 1px at 36% 12%, rgba(224, 231, 255, 0.8), transparent),
-    radial-gradient(1.5px 1.5px at 62% 22%, rgba(255, 255, 255, 0.85), transparent),
-    radial-gradient(1px 1px at 82% 16%, rgba(199, 210, 254, 0.75), transparent),
-    radial-gradient(1.2px 1.2px at 91% 34%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(1px 1px at 24% 42%, rgba(255, 255, 255, 0.65), transparent);
-}
-
-.weather-scene__grain {
-  position: fixed;
-  inset: 0;
   z-index: -1;
-  pointer-events: none;
-  opacity: 0.032;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  transition: background 0.8s ease;
 }
 
-.weather-scene__layout {
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes rain-drift {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -36px 140px;
-  }
+.nav-rail {
+  background: rgba(18, 19, 23, 0.62);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }

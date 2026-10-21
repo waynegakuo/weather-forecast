@@ -1,292 +1,359 @@
-<div class="weather-scene min-h-screen text-white selection:bg-sky-400/30 selection:text-white">
-  <!-- Layer 1: Low-opacity organic sky texture -->
+<div class="weather-app-viewport relative flex min-h-dvh w-full flex-col lg:h-dvh lg:flex-row lg:overflow-hidden text-white">
+  <!-- Full-Screen Weather Condition Background Image & Overlay -->
   <div
     class="weather-scene__photo"
     [style.background-image]="'url(' + backgroundImage() + ')'"
     aria-hidden="true"
   ></div>
-
-  <!-- Layer 2: Dynamic Chameleon Sky Dome Gradient -->
-  <div class="weather-scene__overlay" [style.background]="sceneOverlay()" aria-hidden="true"></div>
-
-  <!-- Layer 3: Ambient Celestial Orbs -->
   <div
-    class="weather-scene__orb weather-scene__orb--primary"
-    [style.background]="atmosphere().orbPrimary"
-    aria-hidden="true"
-  ></div>
-  <div
-    class="weather-scene__orb weather-scene__orb--secondary"
-    [style.background]="atmosphere().orbSecondary"
+    class="weather-scene__overlay"
+    [style.background]="sceneOverlay()"
     aria-hidden="true"
   ></div>
 
-  <!-- Layer 4: Atmospheric Precipitation / Starfield Effects -->
-  @if (atmosphere().hasRain) {
-    <div class="weather-scene__rain" aria-hidden="true"></div>
-  }
-  @if (atmosphere().hasStars) {
-    <div class="weather-scene__stars" aria-hidden="true"></div>
-  }
+  <!-- Left Full-Height Vertical Navigation Rail -->
+  <aside
+    class="nav-rail relative z-20 flex w-full shrink-0 flex-row items-center justify-between border-b border-white/[0.08] px-5 py-3 lg:h-full lg:w-[5rem] lg:flex-col lg:border-r lg:border-b-0 lg:px-0 lg:py-6"
+    aria-label="Primary navigation"
+  >
+    <!-- Top Avatar / Station Badge -->
+    <button
+      type="button"
+      class="group relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/[0.08] shadow-md transition hover:border-white/40"
+      (click)="refreshWeather()"
+      title="Active Weather Station"
+    >
+      <img
+        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+        alt="User profile"
+        class="h-full w-full object-cover"
+      />
+    </button>
 
-  <!-- Layer 5: Subtle Tactile Film Grain -->
-  <div class="weather-scene__grain" aria-hidden="true"></div>
+    <!-- Center Navigation Icons -->
+    <nav class="flex flex-row items-center gap-1.5 lg:flex-col lg:gap-2.5">
+      <!-- 1. Home / Dashboard -->
+      <button
+        type="button"
+        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
+        [class.bg-white/[0.12]]="activeNav() === 'home'"
+        [class.text-white]="activeNav() === 'home'"
+        [class.shadow-inner]="activeNav() === 'home'"
+        [class.text-white/45]="activeNav() !== 'home'"
+        [class.hover:bg-white/[0.06]]="activeNav() !== 'home'"
+        [class.hover:text-white/80]="activeNav() !== 'home'"
+        (click)="onNavClick('home')"
+        title="Dashboard overview"
+        aria-label="Dashboard overview"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 3.2 3 10.5V20a1 1 0 0 0 1 1h5.5v-6h5v6H20a1 1 0 0 0 1-1v-9.5L12 3.2z" />
+        </svg>
+      </button>
 
-  <!-- Main Editorial Instrument Container -->
-  <div class="weather-scene__layout mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-    <!-- Top Atmospheric Command Header -->
-    <header class="instrument-bar relative z-30 rounded-[1.5rem] px-4 py-3.5 sm:px-6">
-      <div class="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:justify-between">
-        <!-- Brand Identity & Live Sky Status -->
-        <div class="flex items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.07] shadow-inner">
-              <svg class="h-5 w-5 text-sky-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke-linecap="round" />
-              </svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h1 class="font-display text-base font-bold tracking-tight text-white">SOLSTICE</h1>
-                <span class="hidden rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-[0.18em] text-sky-300 sm:inline">
-                  METEOROLOGICAL INSTRUMENT
-                </span>
-              </div>
-              <p class="font-mono text-[10px] tracking-[0.16em] text-slate-400">
-                {{ atmosphere().badgeText }}
-              </p>
-            </div>
-          </div>
+      <!-- 2. Saved / Search Locations -->
+      <button
+        type="button"
+        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
+        [class.bg-white/[0.12]]="activeNav() === 'locations'"
+        [class.text-white]="activeNav() === 'locations'"
+        [class.text-white/45]="activeNav() !== 'locations'"
+        [class.hover:bg-white/[0.06]]="activeNav() !== 'locations'"
+        [class.hover:text-white/80]="activeNav() !== 'locations'"
+        (click)="onNavClick('locations')"
+        title="Search city or location"
+        aria-label="Search city or location"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
+        </svg>
+      </button>
 
-          <!-- Mobile Unit Switcher -->
-          <div class="flex items-center gap-1 rounded-full border border-white/12 bg-black/30 p-0.5 lg:hidden">
-            <button
-              type="button"
-              class="rounded-full px-2.5 py-1 font-mono text-xs font-semibold transition-all"
-              [class.bg-white]="unit() === 'C'"
-              [class.text-slate-950]="unit() === 'C'"
-              [class.text-slate-400]="unit() !== 'C'"
-              (click)="setUnit('C')"
-            >
-              °C
-            </button>
-            <button
-              type="button"
-              class="rounded-full px-2.5 py-1 font-mono text-xs font-semibold transition-all"
-              [class.bg-white]="unit() === 'F'"
-              [class.text-slate-950]="unit() === 'F'"
-              [class.text-slate-400]="unit() !== 'F'"
-              (click)="setUnit('F')"
-            >
-              °F
-            </button>
-          </div>
+      <!-- 3. Compass / Wind & GPS -->
+      <button
+        type="button"
+        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
+        [class.bg-white/[0.12]]="activeNav() === 'compass'"
+        [class.text-white]="activeNav() === 'compass'"
+        [class.text-white/45]="activeNav() !== 'compass'"
+        [class.hover:bg-white/[0.06]]="activeNav() !== 'compass'"
+        [class.hover:text-white/80]="activeNav() !== 'compass'"
+        (click)="useMyLocation()"
+        title="Use GPS coordinates"
+        aria-label="Use GPS coordinates"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" stroke="none" />
+        </svg>
+      </button>
+
+      <!-- 4. Analytics / Extended Metrics -->
+      <button
+        type="button"
+        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
+        [class.bg-white/[0.12]]="activeNav() === 'analytics'"
+        [class.text-white]="activeNav() === 'analytics'"
+        [class.text-white/45]="activeNav() !== 'analytics'"
+        [class.hover:bg-white/[0.06]]="activeNav() !== 'analytics'"
+        [class.hover:text-white/80]="activeNav() !== 'analytics'"
+        (click)="onNavClick('analytics')"
+        title="Toggle extended metrics"
+        aria-label="Toggle extended metrics"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M6 20V14M12 20V10M18 20V4" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <!-- 5. Settings / Toggle Unit (°C / °F) -->
+      <button
+        type="button"
+        class="flex h-11 w-11 items-center justify-center rounded-2xl text-white/45 transition-all hover:bg-white/[0.06] hover:text-white/80"
+        (click)="onNavClick('settings')"
+        title="Switch temperature unit (°C / °F)"
+        aria-label="Switch temperature unit"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+          />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Bottom Refresh & Updated Status -->
+    <div class="hidden flex-col items-center gap-1 lg:flex">
+      <button
+        type="button"
+        class="flex h-9 w-9 items-center justify-center rounded-xl text-white/60 transition hover:bg-white/[0.07] hover:text-white"
+        [disabled]="loading()"
+        (click)="refreshWeather()"
+        title="Refresh live weather"
+        aria-label="Refresh live weather"
+      >
+        <svg
+          class="h-4 w-4"
+          [class.animate-spin]="loading()"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke-linecap="round" />
+          <polyline points="21 3 21 9 15 9" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <div class="text-center text-[10px] leading-tight text-white/45">
+        <p>Updated</p>
+        <p class="text-white/65">{{ lastUpdatedLabel() }}</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Full-Viewport Dashboard Content Area -->
+  <div class="relative z-10 flex flex-1 flex-col min-h-0 overflow-y-auto xl:overflow-hidden px-5 py-4 sm:px-7 sm:py-5">
+    <!-- Top Header Bar: Location + Date on Left, Search + Controls on Right -->
+    <header class="relative z-30 mb-4 flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <!-- Active Location & Date -->
+      <div class="flex items-start gap-2.5">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center text-white">
+          <svg class="h-5 w-5 fill-white" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+            />
+          </svg>
+        </span>
+        <div>
+          <h1 class="text-base font-medium leading-tight tracking-tight text-white">
+            {{ weather()?.locationLabel || 'Mombasa, Coast, Kenya' }}
+          </h1>
+          <p class="mt-0.5 text-xs text-white/50">
+            @if (weather(); as data) {
+              {{ data.current.observedAt | date: 'EEEE, MMMM d' }}
+            } @else {
+              Loading live forecast…
+            }
+          </p>
         </div>
+      </div>
 
-        <!-- Search Form with Live Autocomplete + GPS + Unit Toggle -->
-        <div class="flex flex-1 items-center justify-end gap-2.5 lg:max-w-xl">
-          <form
-            class="relative flex flex-1 items-center gap-2"
-            (submit)="$event.preventDefault(); search()"
-          >
-            <label class="sr-only" for="city">Search city or station</label>
-            <div class="relative flex-1">
-              <svg
-                class="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" stroke-linecap="round" />
-              </svg>
-              <input
-                id="city"
-                type="text"
-                class="glass-input w-full rounded-full py-2 pr-4 pl-10 text-sm outline-none"
-                placeholder="Search any city, region, or station…"
-                [formField]="cityForm.cityName"
-                (input)="onSearchInput($any($event.target).value)"
-                (focus)="showSuggestions.set(true)"
-                autocomplete="off"
-              />
-
-              <!-- Live City Autocomplete Dropdown -->
-              @if (showSuggestions() && suggestions().length > 0) {
-                <div
-                  class="
-                    absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-2xl
-                    border border-white/15 bg-slate-950/95 p-1.5 shadow-2xl backdrop-blur-2xl
-                  "
-                >
-                  <p class="px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-400">
-                    Matching Synoptic Stations
-                  </p>
-                  @for (place of suggestions(); track place.id) {
-                    <button
-                      type="button"
-                      class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-xs transition-colors hover:bg-white/10"
-                      (click)="selectSuggestion(place)"
-                    >
-                      <div class="truncate">
-                        <span class="font-semibold text-white">{{ place.name }}</span>
-                        @if (place.admin1) {
-                          <span class="text-slate-400">, {{ place.admin1 }}</span>
-                        }
-                        <span class="text-slate-400"> · {{ place.country }}</span>
-                      </div>
-                      <div class="flex shrink-0 items-center gap-1.5 font-mono text-[10px] text-slate-400">
-                        @if (place.elevation !== undefined) {
-                          <span>{{ place.elevation }}m</span>
-                        }
-                        @if (place.country_code) {
-                          <span class="rounded bg-white/10 px-1.5 py-0.5 text-slate-200">
-                            {{ place.country_code }}
-                          </span>
-                        }
-                      </div>
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-
+      <!-- Search & Action Controls -->
+      <div class="flex items-center gap-2.5">
+        <form
+          class="relative flex flex-1 items-center sm:flex-initial"
+          (submit)="$event.preventDefault(); search()"
+        >
+          <label class="sr-only" for="city">Search city or town</label>
+          <div #searchContainer class="relative flex w-full items-center sm:w-64">
+            <svg
+              class="pointer-events-none absolute left-3.5 z-10 h-4 w-4 text-white/75"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" stroke-linecap="round" />
+            </svg>
+            <input
+              #cityInput
+              id="city"
+              type="text"
+              class="w-full rounded-xl border border-white/[0.12] bg-black/30 py-2 pr-14 pl-10 text-xs text-white placeholder-white/55 outline-none transition focus:border-white/30 focus:bg-black/45"
+              placeholder="Search city (e.g. Brooklyn, Tokyo)…"
+              [formField]="cityForm.cityName"
+              (input)="onSearchInput($any($event.target).value)"
+              (click)="onInputClick()"
+              autocomplete="off"
+            />
             <button
               type="submit"
-              class="glass-button shrink-0 rounded-full px-4 py-2 text-xs font-semibold tracking-wide"
+              class="
+                absolute right-1.5 z-10 inline-flex items-center gap-1 rounded-lg
+                bg-white/[0.14] px-2.5 py-1 text-[11px] font-medium text-white
+                transition hover:bg-white/[0.22] disabled:opacity-40
+              "
               [disabled]="loading() || !cityForm.cityName().value().trim()"
             >
               @if (loading()) {
-                <span class="inline-block animate-pulse-soft font-mono">SYNC…</span>
+                …
               } @else {
-                Search
+                Go
               }
             </button>
-          </form>
 
-          <!-- GPS Geolocation Button -->
-          <button
-            type="button"
-            class="
-              inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full
-              border border-white/15 bg-white/[0.06] text-slate-200 transition-all
-              hover:border-sky-400/50 hover:bg-white/12 hover:text-white
-            "
-            title="Use my current GPS coordinates"
-            aria-label="Use my current GPS coordinates"
-            [disabled]="locatingGps() || loading()"
-            (click)="useMyLocation()"
-          >
-            <svg class="h-4 w-4" [class.animate-spin]="locatingGps()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke-linecap="round" />
-              <circle cx="12" cy="12" r="7" />
-            </svg>
-          </button>
-
-          <!-- Desktop Segmented °C / °F Toggle -->
-          <div class="hidden items-center gap-1 rounded-full border border-white/12 bg-black/30 p-0.5 lg:flex">
-            <button
-              type="button"
-              class="rounded-full px-3 py-1 font-mono text-xs font-semibold transition-all"
-              [class.bg-white]="unit() === 'C'"
-              [class.text-slate-950]="unit() === 'C'"
-              [class.text-slate-400]="unit() !== 'C'"
-              (click)="setUnit('C')"
-            >
-              °C
-            </button>
-            <button
-              type="button"
-              class="rounded-full px-3 py-1 font-mono text-xs font-semibold transition-all"
-              [class.bg-white]="unit() === 'F'"
-              [class.text-slate-950]="unit() === 'F'"
-              [class.text-slate-400]="unit() !== 'F'"
-              (click)="setUnit('F')"
-            >
-              °F
-            </button>
+            <!-- City Autocomplete Suggestions Dropdown -->
+            @if (showSuggestions() && suggestions().length > 0) {
+              <div
+                class="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-2xl border border-white/[0.14] bg-[#1c1d22]/95 p-1.5 shadow-2xl backdrop-blur-2xl"
+              >
+                <div class="flex items-center justify-between px-3 py-1">
+                  <span class="text-[10px] font-medium text-white/45">Select location</span>
+                  <button
+                    type="button"
+                    class="rounded px-1.5 py-0.5 text-[10px] text-white/50 transition hover:bg-white/10 hover:text-white"
+                    (click)="closeSuggestions()"
+                  >
+                    Close
+                  </button>
+                </div>
+                @for (place of suggestions(); track place.id) {
+                  <button
+                    type="button"
+                    class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-xs transition hover:bg-white/[0.09]"
+                    (click)="selectSuggestion(place)"
+                  >
+                    <div class="truncate">
+                      <span class="font-medium text-white">{{ place.name }}</span>
+                      @if (place.admin1) {
+                        <span class="text-white/50">, {{ place.admin1 }}</span>
+                      }
+                      <span class="text-white/50">, {{ place.country }}</span>
+                    </div>
+                    @if (place.country_code) {
+                      <span class="shrink-0 rounded-md bg-white/[0.08] px-1.5 py-0.5 text-[10px] text-white/75">
+                        {{ place.country_code }}
+                      </span>
+                    }
+                  </button>
+                }
+              </div>
+            }
           </div>
-        </div>
-      </div>
+        </form>
 
-      <!-- Curated World Stations Quick-Switch Ribbon -->
-      <div class="mt-3 flex items-center gap-2 overflow-x-auto border-t border-white/8 pt-2.5 pb-0.5 no-scrollbar">
-        <span class="shrink-0 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
-          STATIONS //
-        </span>
-        @for (station of worldStations; track station.label) {
-          <button
-            type="button"
-            class="
-              group inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1
-              text-xs transition-all
-            "
-            [class.border-sky-400/50]="isStationActive(station.label)"
-            [class.bg-sky-400/15]="isStationActive(station.label)"
-            [class.text-white]="isStationActive(station.label)"
-            [class.border-white/8]="!isStationActive(station.label)"
-            [class.bg-white/[0.03]]="!isStationActive(station.label)"
-            [class.text-slate-300]="!isStationActive(station.label)"
-            (click)="selectPresetCity(station.label)"
-          >
-            <span class="font-medium">{{ station.label }}</span>
-            <span class="font-mono text-[10px] text-slate-400 group-hover:text-slate-300">
-              {{ station.tag }}
-            </span>
-          </button>
-        }
-      </div>
-
-      @if (errorMessage(); as err) {
-        <div
-          class="mt-3 flex items-center justify-between rounded-xl border border-rose-400/30 bg-rose-500/15 px-3.5 py-2 text-xs text-rose-100"
-          role="alert"
-          animate.enter="animate-fade-up"
+        <!-- Locate Me Button -->
+        <button
+          type="button"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.11] bg-black/25 text-white/80 backdrop-blur-md transition hover:border-white/25 hover:bg-white/[0.12] hover:text-white"
+          [disabled]="locatingGps() || loading()"
+          (click)="useMyLocation()"
+          title="Use current GPS location"
+          aria-label="Use current GPS location"
         >
-          <span>{{ err }}</span>
-          <button
-            type="button"
-            class="font-mono text-[10px] uppercase tracking-wider text-rose-200 hover:text-white"
-            (click)="errorMessage.set(null)"
+          <svg
+            class="h-4 w-4"
+            [class.animate-spin]="locatingGps()"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
           >
-            Dismiss
-          </button>
-        </div>
-      }
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke-linecap="round" />
+            <circle cx="12" cy="12" r="7" />
+          </svg>
+        </button>
+
+        <!-- Clean Rounded Unit Switcher Button -->
+        <button
+          type="button"
+          class="shrink-0 rounded-xl border border-white/[0.11] bg-black/25 px-4 py-2 text-xs font-medium text-white backdrop-blur-md transition hover:border-white/25 hover:bg-white/[0.14]"
+          (click)="toggleUnit()"
+        >
+          Unit: °{{ unit() }}
+        </button>
+      </div>
     </header>
 
-    <!-- Main Bento Grid Workspace -->
+    @if (errorMessage(); as err) {
+      <div
+        class="mb-3 flex shrink-0 items-center justify-between rounded-xl border border-rose-400/25 bg-rose-500/15 px-4 py-2 text-xs text-rose-100"
+        role="alert"
+        animate.enter="animate-fade-up"
+      >
+        <span>{{ err }}</span>
+        <button
+          type="button"
+          class="text-xs font-medium text-rose-200 hover:text-white"
+          (click)="errorMessage.set(null)"
+        >
+          Dismiss
+        </button>
+      </div>
+    }
+
+    <!-- Main 2-Column Viewport-Fitted Dashboard Grid -->
     @if (loading() && !weather()) {
-      <div class="my-auto flex flex-col items-center justify-center py-24 text-slate-200">
-        <div class="instrument-card flex items-center gap-3.5 rounded-2xl px-6 py-4 text-sm">
-          <span class="h-2.5 w-2.5 animate-ping rounded-full bg-sky-400"></span>
-          <span class="font-mono text-xs uppercase tracking-widest">
-            Acquiring telemetry for {{ cityForm.cityName().value() }}…
-          </span>
+      <div class="my-auto flex flex-col items-center justify-center py-20 text-white/70">
+        <div class="matte-card rounded-2xl px-6 py-4 text-sm">
+          Loading forecast for {{ cityForm.cityName().value() }}…
         </div>
       </div>
     } @else if (weather(); as data) {
-      <div class="mt-5 grid flex-1 grid-cols-1 items-start gap-5 lg:grid-cols-12">
-        <!-- Left Anchor: Hero Station Card -->
-        <aside class="instrument-hero-card rounded-[2rem] p-6 sm:p-7 lg:sticky lg:top-6 lg:col-span-4">
+      <div class="grid flex-1 min-h-0 grid-cols-1 gap-4 xl:grid-cols-12">
+        <!-- Left Column (7 cols): Hero Banner + Hourly Strip + 7-Day Vertical Cards -->
+        <div class="flex h-full min-h-0 flex-col justify-between gap-3.5 xl:col-span-7">
           <app-weather-sidebar [weather]="data" [unit]="unit()" />
-        </aside>
+          <app-hourly-chart class="shrink-0" [hourly]="data.hourly" [unit]="unit()" />
+          <app-week-forecast
+            class="shrink-0"
+            [daily]="data.daily"
+            [currentTemp]="data.current.temperature"
+            [unit]="unit()"
+          />
+        </div>
 
-        <!-- Right Telemetry Deck: 24h Curve + 7-Day Range Bars + 6 Bespoke Instruments -->
-        <main class="lg:col-span-8">
-          <app-weather-details-panel [weather]="data" [unit]="unit()" />
+        <!-- Right Column (5 cols): Live Conditions + Recently Searched + Wind Map -->
+        <main class="h-full min-h-0 xl:col-span-5">
+          <app-weather-details-panel
+            [weather]="data"
+            [unit]="unit()"
+            [recentCities]="recentCities()"
+            [showExtendedMetrics]="activeNav() === 'analytics'"
+            (selectCity)="selectRecentCity($event)"
+          />
         </main>
       </div>
     } @else if (!loading()) {
-      <div class="my-auto flex flex-col items-center justify-center gap-3 py-24 text-slate-300" animate.enter="animate-fade-in">
-        <p class="font-display text-lg">Awaiting station coordinates</p>
-        <p class="max-w-md text-center text-sm text-slate-400">
-          Select a world station above or search any city to initialize live meteorological telemetry.
-        </p>
+      <div class="my-auto flex flex-col items-center justify-center gap-2 py-20 text-white/70" animate.enter="animate-fade-in">
+        <p class="text-base font-medium">Search any city to view live conditions</p>
+        <p class="text-xs text-white/45">Real-time weather forecast powered by Open-Meteo.</p>
       </div>
     }
   </div>

@@ -1,3 +1,64 @@
-:host {
-  display: block;
+.wind-map-card {
+  background:
+    radial-gradient(circle at 68% 50%, rgba(14, 24, 38, 0.94) 0%, rgba(28, 29, 34, 0.94) 72%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(20, 21, 25, 0.88) 100%);
+  box-shadow:
+    0 12px 32px -8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.wind-stream-lines path {
+  stroke-dasharray: 24 12 10 10;
+  animation: wind-flow var(--wind-speed, 3.2s) linear infinite;
+}
+
+.wind-particles path {
+  stroke-dasharray: 16 42;
+  animation: wind-particle-flow var(--wind-speed, 3.2s) linear infinite;
+}
+
+.wind-orbit-ring {
+  transform-origin: 282px 85px;
+  animation: wind-orbit 24s linear infinite;
+}
+
+.wind-orbit-ring-reverse {
+  transform-origin: 282px 85px;
+  animation: wind-orbit-rev 32s linear infinite;
+}
+
+@keyframes wind-flow {
+  from {
+    stroke-dashoffset: 56;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wind-particle-flow {
+  from {
+    stroke-dashoffset: 58;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wind-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wind-orbit-rev {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
 }

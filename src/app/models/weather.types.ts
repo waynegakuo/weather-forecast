@@ -119,6 +119,7 @@ export interface DailyForecastView {
 export interface WeatherBundle {
   locationName: string;
   regionLabel: string;
+  country: string;
   countryCode: string;
   locationLabel: string;
   latitude: number;
@@ -129,4 +130,14 @@ export interface WeatherBundle {
   current: CurrentWeatherView;
   hourly: HourlyForecastView[];
   daily: DailyForecastView[];
+}
+
+export interface RecentCityWeather {
+  cityQuery: string;
+  title: string;
+  subtitle: string;
+  temperatureC: number;
+  weatherCode: number;
+  isDay: boolean;
+  bundle?: WeatherBundle;
 }

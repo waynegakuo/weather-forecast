@@ -1,318 +1,341 @@
-<section aria-labelledby="highlights-heading">
-  <div class="mb-4 flex items-center justify-between">
-    <div class="flex items-center gap-2.5">
-      <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
-      <h2 id="highlights-heading" class="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300">
-        Atmospheric Instrument Deck
-      </h2>
+<div class="flex h-full min-h-0 flex-col justify-between gap-3.5">
+  <!-- 1. LIVE CONDITIONS CARD (Top Right - Dynamic Data Curve) -->
+  <section
+    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5"
+    aria-labelledby="live-conditions-heading"
+  >
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <h2 id="live-conditions-heading" class="text-sm font-medium text-white/95">
+          Live Conditions
+        </h2>
+        @if (hoveredWaveIndex() !== null) {
+          <span class="rounded-md bg-white/[0.08] px-2 py-0.5 text-[11px] text-white/80">
+            {{ activeWaveDot().label }} · {{ formatCityTemp(activeWaveDot().tempC) }}°{{ unit() }}
+          </span>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="inline-flex h-6 w-6 items-center justify-center rounded-lg text-white/60 transition hover:bg-white/[0.06] hover:text-white"
+        (click)="showExtraDetails.set(!showExtraDetails())"
+        title="Toggle extended metrics"
+        aria-label="Toggle extended metrics"
+      >
+        <svg
+          class="h-4 w-4 transition-transform"
+          [class.rotate-90]="showExtraDetails() || showExtendedMetrics()"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
     </div>
-    <span class="font-mono text-[11px] text-slate-400">LIVE SURFACE TELEMETRY</span>
-  </div>
 
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-    <!-- 1. WIND & GUSTS COMPASS ROSE -->
-    <article class="instrument-card animate-fade-up stagger-1 flex flex-col justify-between rounded-[1.75rem] p-5">
-      <div class="flex items-center justify-between border-b border-white/8 pb-3">
-        <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-          01 // Wind Vector
-        </span>
-        <span class="rounded-full bg-white/[0.06] px-2.5 py-0.5 font-mono text-[10px] font-semibold text-sky-300">
-          Force {{ beaufort().scale }} · {{ beaufort().label }}
-        </span>
+    <!-- Dynamic Delta & Contextual Status Badges -->
+    <div class="mt-2.5 flex items-center justify-between gap-2">
+      <div class="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.05] px-3 py-1 text-xs text-white/80">
+        <span>{{ liveConditionBadge().deltaText }}</span>
       </div>
 
-      <div class="my-4 flex items-center justify-between gap-4">
-        <div>
-          <div class="flex items-baseline gap-1.5">
-            <span class="font-display text-4xl font-bold tracking-tight text-white">
-              {{ round(current().windSpeed) }}
-            </span>
-            <span class="font-mono text-xs text-slate-400">km/h</span>
-          </div>
-          <p class="mt-1 font-mono text-xs text-slate-300">
-            Bearing <strong class="text-white">{{ round(current().windDirection) }}° {{ windCompass() }}</strong>
-          </p>
-          <div class="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/8 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] text-slate-300">
-            <span class="text-slate-400">GUSTS</span>
-            <strong class="text-amber-300">{{ round(current().windGusts) }} km/h</strong>
-          </div>
-        </div>
+      <div
+        class="inline-flex items-center rounded-xl border px-3 py-1 text-xs font-medium shadow-sm transition-colors"
+        [class]="liveConditionBadge().badgeClass"
+      >
+        {{ liveConditionBadge().statusLabel }}
+      </div>
+    </div>
 
-        <!-- SVG 360° Compass Rose -->
-        <div class="relative flex h-28 w-28 shrink-0 items-center justify-center">
-          <svg viewBox="0 0 120 120" class="h-full w-full overflow-visible" aria-hidden="true">
-            <!-- Outer dial ring -->
-            <circle cx="60" cy="60" r="50" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
-            <circle cx="60" cy="60" r="42" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="2 4" />
+    <!-- Dynamic Interactive SVG Wave Curve -->
+    <div
+      class="relative my-2"
+      (mouseleave)="hoveredWaveIndex.set(null)"
+    >
+      <svg
+        viewBox="0 0 320 56"
+        class="h-14 w-full overflow-visible"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="liveWaveStroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#0ea5e9" />
+            <stop offset="48%" stop-color="#6366f1" />
+            <stop offset="76%" stop-color="#a855f7" />
+            <stop offset="100%" stop-color="#f97316" />
+          </linearGradient>
+          <linearGradient id="liveWaveGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#6366f1" stop-opacity="0.16" />
+            <stop offset="100%" stop-color="#6366f1" stop-opacity="0" />
+          </linearGradient>
+        </defs>
 
-            <!-- Cardinal Labels -->
-            <text x="60" y="19" text-anchor="middle" class="fill-amber-300 font-mono text-[9px] font-bold">N</text>
-            <text x="103" y="63" text-anchor="middle" class="fill-slate-400 font-mono text-[8px]">E</text>
-            <text x="60" y="107" text-anchor="middle" class="fill-slate-400 font-mono text-[8px]">S</text>
-            <text x="17" y="63" text-anchor="middle" class="fill-slate-400 font-mono text-[8px]">W</text>
+        <!-- Dynamic Spline Stroke -->
+        <path
+          [attr.d]="liveWavePath()"
+          fill="none"
+          stroke="url(#liveWaveStroke)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          class="transition-all duration-500"
+        />
 
-            <!-- Rotating Wind Vector Arrow -->
-            <g [attr.transform]="'rotate(' + current().windDirection + ' 60 60)'" class="transition-transform duration-700 ease-out">
-              <line x1="60" y1="88" x2="60" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" />
-              <polygon points="60,20 55,31 60,28 65,31" fill="#38bdf8" />
-              <circle cx="60" cy="88" r="3" fill="none" stroke="#38bdf8" stroke-width="1.8" />
-            </g>
+        <!-- Dynamic White Ring Indicator Node -->
+        <circle
+          [attr.cx]="activeWaveDot().x"
+          [attr.cy]="activeWaveDot().y"
+          r="8"
+          fill="rgba(255,255,255,0.12)"
+          class="transition-all duration-300"
+        />
+        <circle
+          [attr.cx]="activeWaveDot().x"
+          [attr.cy]="activeWaveDot().y"
+          r="4.5"
+          fill="#222327"
+          stroke="#ffffff"
+          stroke-width="2.5"
+          class="transition-all duration-300"
+        />
+      </svg>
 
-            <!-- Center pivot -->
-            <circle cx="60" cy="60" r="4" fill="#0f172a" stroke="#e2e8f0" stroke-width="2" />
+      <!-- Invisible Hover Scrub Columns over the Wave -->
+      <div
+        class="absolute inset-0 grid"
+        [style.grid-template-columns]="'repeat(' + liveWavePoints().length + ', minmax(0, 1fr))'"
+      >
+        @for (pt of liveWavePoints(); track $index; let idx = $index) {
+          <div
+            class="h-full w-full cursor-pointer"
+            (mouseenter)="hoveredWaveIndex.set(idx)"
+            (click)="hoveredWaveIndex.set(idx)"
+          ></div>
+        }
+      </div>
+    </div>
+
+    <!-- 3-Column Metrics Row: Humidity | Wind | Pressure -->
+    <div class="grid grid-cols-3 divide-x divide-white/[0.08] pt-1">
+      <!-- Humidity -->
+      <div class="flex items-start gap-2 pr-2">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.04] text-white/65">
+          <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
           </svg>
+        </span>
+        <div>
+          <p class="text-sm font-medium leading-tight text-white">{{ round(current().humidity) }}%</p>
+          <p class="mt-0.5 text-[11px] text-white/45">Humidity</p>
         </div>
       </div>
 
-      <p class="text-xs text-slate-400">{{ beaufort().detail }}</p>
-    </article>
-
-    <!-- 2. SOLAR HORIZON EPHEMERIS -->
-    <article class="instrument-card animate-fade-up stagger-2 flex flex-col justify-between rounded-[1.75rem] p-5">
-      <div class="flex items-center justify-between border-b border-white/8 pb-3">
-        <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-          02 // Solar Ephemeris
+      <!-- Wind -->
+      <div class="flex items-start gap-2 px-2.5">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.04] text-white/65">
+          <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" stroke-linecap="round" />
+          </svg>
         </span>
-        <span class="rounded-full bg-amber-400/15 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-amber-300">
-          {{ solarTelemetry().phaseLabel }}
-        </span>
+        <div>
+          <p class="text-sm font-medium leading-tight text-white">{{ round(current().windSpeed) }} km/h</p>
+          <p class="mt-0.5 text-[11px] text-white/45">Wind</p>
+        </div>
       </div>
 
-      <!-- Parabolic Solar Horizon SVG -->
-      <div class="my-3">
-        <svg viewBox="0 0 260 102" class="w-full overflow-visible" aria-hidden="true">
-          <defs>
-            <linearGradient id="solarDayDome" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.26" />
-              <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.0" />
-            </linearGradient>
-          </defs>
+      <!-- Pressure -->
+      <div class="flex items-start gap-2 pl-2.5">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.04] text-white/65">
+          <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <div>
+          <p class="text-sm font-medium leading-tight text-white">{{ pressureKpa() }} kPa</p>
+          <p class="mt-0.5 text-[11px] text-white/45">Pressure</p>
+        </div>
+      </div>
+    </div>
 
-          <!-- Daylight Parabolic Area Fill -->
-          <path d="M 24 78 Q 130 -34 236 78 Z" fill="url(#solarDayDome)" />
+    <!-- Expandable Extended Telemetry Drawer (Sunrise, Sunset, UV, Feels Like) -->
+    @if (showExtraDetails() || showExtendedMetrics()) {
+      <div class="mt-3 grid grid-cols-4 gap-2 border-t border-white/[0.08] pt-3">
+        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+          <p class="text-[10px] text-white/45">Feels Like</p>
+          <p class="mt-0.5 text-xs font-medium text-white">{{ feelsLikeTemp() }}°{{ unit() }}</p>
+        </div>
+        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+          <p class="text-[10px] text-white/45">UV Index</p>
+          <p class="mt-0.5 text-xs font-medium text-white">{{ round(current().uvIndex) }} · {{ uvMeta().level }}</p>
+        </div>
+        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+          <p class="text-[10px] text-white/45">Sunrise</p>
+          <p class="mt-0.5 text-xs font-medium text-white">{{ current().sunrise | date: 'h:mm a' }}</p>
+        </div>
+        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+          <p class="text-[10px] text-white/45">Sunset</p>
+          <p class="mt-0.5 text-xs font-medium text-white">{{ current().sunset | date: 'h:mm a' }}</p>
+        </div>
+      </div>
+    }
+  </section>
 
-          <!-- Dashed Full Parabolic Trajectory -->
-          <path
-            d="M 24 78 Q 130 -34 236 78"
-            fill="none"
-            stroke="rgba(251, 191, 36, 0.45)"
-            stroke-width="1.75"
-            stroke-dasharray="4 4"
-          />
-
-          <!-- Horizon Line -->
-          <line x1="8" y1="78" x2="252" y2="78" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
-          <text x="12" y="92" class="fill-slate-400 font-mono text-[9px]">HORIZON 0°</text>
-          <text x="248" y="92" text-anchor="end" class="fill-slate-400 font-mono text-[9px]">
-            DAYLIGHT {{ solarTelemetry().durationLabel }}
-          </text>
-
-          <!-- Sunrise & Sunset Horizon Ticks -->
-          <circle cx="24" cy="78" r="3" fill="#fbbf24" />
-          <circle cx="236" cy="78" r="3" fill="#f97316" />
-
-          <!-- Live Solar Orb -->
-          <g>
-            <circle
-              [attr.cx]="solarTelemetry().sunX"
-              [attr.cy]="solarTelemetry().sunY"
-              r="11"
-              [attr.fill]="solarTelemetry().isDaylight ? 'rgba(251, 191, 36, 0.28)' : 'rgba(129, 140, 248, 0.25)'"
-            />
-            <circle
-              [attr.cx]="solarTelemetry().sunX"
-              [attr.cy]="solarTelemetry().sunY"
-              r="5.5"
-              [attr.fill]="solarTelemetry().isDaylight ? '#fde047' : '#a5b4fc'"
-              stroke="#0f172a"
-              stroke-width="1.5"
-            />
-          </g>
+  <!-- 2. RECENTLY SEARCHED CARD (Middle Right) -->
+  <section
+    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5"
+    aria-labelledby="recently-searched-heading"
+  >
+    <div class="flex items-center justify-between">
+      <h2 id="recently-searched-heading" class="text-sm font-medium text-white/95">
+        Recently Searched
+      </h2>
+      <button
+        type="button"
+        class="inline-flex items-center gap-1 text-xs text-white/60 transition hover:text-white"
+        (click)="showAllRecent.set(!showAllRecent())"
+      >
+        <span>{{ showAllRecent() ? 'Show Less' : 'See All' }}</span>
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-      </div>
+      </button>
+    </div>
 
-      <div class="grid grid-cols-2 gap-3 rounded-2xl border border-white/8 bg-white/[0.03] px-3.5 py-2.5">
-        <div>
-          <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Sunrise</p>
-          <p class="font-mono text-sm font-semibold text-white">{{ current().sunrise | date: 'h:mm a' }}</p>
-        </div>
-        <div class="text-right">
-          <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Sunset</p>
-          <p class="font-mono text-sm font-semibold text-white">{{ current().sunset | date: 'h:mm a' }}</p>
-        </div>
-      </div>
-    </article>
-
-    <!-- 3. UV RADIATION SPECTRUM -->
-    <article class="instrument-card animate-fade-up stagger-3 flex flex-col justify-between rounded-[1.75rem] p-5">
-      <div class="flex items-center justify-between border-b border-white/8 pb-3">
-        <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-          03 // UV Radiation
-        </span>
-        <span class="font-mono text-xs font-semibold" [class]="uvMeta().accentClass">
-          {{ uvMeta().level }}
-        </span>
-      </div>
-
-      <div class="my-4">
-        <div class="flex items-baseline justify-between">
-          <div class="flex items-baseline gap-2">
-            <span class="font-display text-4xl font-bold tracking-tight text-white">
-              {{ round(current().uvIndex) }}
-            </span>
-            <span class="font-mono text-xs uppercase text-slate-400">WHO Index</span>
-          </div>
-          <span class="font-mono text-[11px] text-slate-400">Scale 0 – 11+</span>
-        </div>
-
-        <!-- Spectrum Bar -->
-        <div class="relative mt-4 h-2.5 w-full rounded-full uv-spectrum-bar">
-          <span
-            class="
-              absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full
-              border-2 border-slate-950 bg-white shadow-[0_0_10px_rgba(255,255,255,0.9)] transition-all duration-500
-            "
-            [style.left.%]="uvMeta().percent"
-          ></span>
-        </div>
-
-        <div class="mt-2 flex justify-between font-mono text-[10px] text-slate-400">
-          <span>0 Low</span>
-          <span>3 Mod</span>
-          <span>6 High</span>
-          <span>8 V.High</span>
-          <span>11+ Ext</span>
-        </div>
-      </div>
-
-      <p class="text-xs text-slate-300">{{ uvMeta().advice }}</p>
-    </article>
-
-    <!-- 4. HUMIDITY & DEW POINT HYGROMETER -->
-    <article class="instrument-card animate-fade-up stagger-4 flex flex-col justify-between rounded-[1.75rem] p-5">
-      <div class="flex items-center justify-between border-b border-white/8 pb-3">
-        <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-          04 // Psychrometrics
-        </span>
-        <span class="rounded-full bg-sky-400/15 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-sky-300">
-          {{ humidityMeta().status }}
-        </span>
-      </div>
-
-      <div class="my-4 flex items-end justify-between gap-4">
-        <div>
-          <div class="flex items-baseline gap-1">
-            <span class="font-display text-4xl font-bold tracking-tight text-white">
-              {{ round(current().humidity) }}
-            </span>
-            <span class="font-mono text-lg text-sky-300">%</span>
-          </div>
-          <p class="mt-1 font-mono text-xs text-slate-300">
-            Dew point <strong class="text-white">{{ dewPointDisplay() }}°{{ unit() }}</strong>
-          </p>
-        </div>
-
-        <!-- Visual Segmented Moisture Gauge -->
-        <div class="flex h-16 items-end gap-1.5" aria-hidden="true">
-          @for (bar of [20, 40, 60, 80, 100]; track bar) {
-            <div class="flex flex-col items-center gap-1">
-              <div
-                class="w-3 rounded-full transition-all duration-500"
-                [style.height.px]="14 + bar * 0.42"
-                [class.bg-gradient-to-t]="current().humidity >= bar - 10"
-                [class.from-sky-500]="current().humidity >= bar - 10"
-                [class.to-cyan-300]="current().humidity >= bar - 10"
-                [class.bg-white/10]="current().humidity < bar - 10"
-              ></div>
+    <div class="mt-2.5 flex flex-col gap-2">
+      @for (city of visibleRecentCities(); track city.title) {
+        <button
+          type="button"
+          class="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
+          (click)="selectCity.emit(city)"
+        >
+          <div class="flex items-center gap-3">
+            <app-weather-icon
+              [code]="city.weatherCode"
+              [isDay]="city.isDay"
+              [size]="34"
+            />
+            <div>
+              <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
+              <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
             </div>
-          }
-        </div>
-      </div>
-
-      <p class="text-xs text-slate-400">{{ humidityMeta().note }}</p>
-    </article>
-
-    <!-- 5. BAROMETRIC PRESSURE DIAL -->
-    <article class="instrument-card animate-fade-up stagger-5 flex flex-col justify-between rounded-[1.75rem] p-5">
-      <div class="flex items-center justify-between border-b border-white/8 pb-3">
-        <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-          05 // Barometer
-        </span>
-        <span class="font-mono text-[11px] font-medium text-slate-300">{{ baroMeta().status }}</span>
-      </div>
-
-      <div class="my-3 flex items-center justify-between gap-4">
-        <div>
-          <div class="flex items-baseline gap-1.5">
-            <span class="font-display text-4xl font-bold tracking-tight text-white">
-              {{ round(current().pressure) }}
-            </span>
-            <span class="font-mono text-xs text-slate-400">hPa</span>
           </div>
-          <p class="mt-1 font-mono text-[11px] text-slate-400">Std Ref · 1013.2 hPa</p>
-        </div>
 
-        <!-- Semicircular Barometer Gauge SVG -->
-        <svg viewBox="0 0 120 74" class="h-16 w-28 shrink-0 overflow-visible" aria-hidden="true">
-          <path
-            d="M 14 62 A 46 46 0 0 1 106 62"
-            fill="none"
-            stroke="rgba(255,255,255,0.12)"
-            stroke-width="6"
-            stroke-linecap="round"
-          />
-          <path
-            d="M 32 25 A 46 46 0 0 1 88 25"
-            fill="none"
-            stroke="rgba(56, 189, 248, 0.35)"
-            stroke-width="6"
-            stroke-linecap="round"
-          />
-          <!-- Standard 1013 tick at top center -->
-          <line x1="60" y1="10" x2="60" y2="18" stroke="#fbbf24" stroke-width="1.5" />
+          <span class="text-2xl font-light tracking-tight text-white">
+            {{ formatCityTemp(city.temperatureC) }}°
+          </span>
+        </button>
+      }
+    </div>
+  </section>
 
-          <!-- Needle -->
-          <g [attr.transform]="'rotate(' + baroNeedleAngle() + ' 60 62)'">
-            <line x1="60" y1="62" x2="60" y2="20" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
-          </g>
-          <circle cx="60" cy="62" r="4" fill="#38bdf8" />
+  <!-- 3. DYNAMIC WIND MAP CARD (Bottom Right - Live Direction & Speed Animated Streamlines) -->
+  <section
+    class="wind-map-card relative flex flex-1 min-h-[136px] items-center justify-between overflow-hidden rounded-[1.35rem] border border-white/[0.08] p-4 sm:p-5"
+    [style.--wind-speed]="windStreamDuration()"
+    aria-labelledby="wind-map-heading"
+  >
+    <!-- Dynamic Topographic & Wind-Vector Streamline SVG Canvas -->
+    <svg
+      class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-75"
+      viewBox="0 0 420 170"
+      fill="none"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <defs>
+        <radialGradient id="windVortexGlow" cx="68%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.16" />
+          <stop offset="55%" stop-color="#1e2025" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#222328" stop-opacity="0.1" />
+        </radialGradient>
+      </defs>
+      <rect width="420" height="170" fill="url(#windVortexGlow)" />
+
+      <!-- Concentric Barometric Contour Rings around Station Pin (cx=282, cy=85) -->
+      <g stroke="rgba(255,255,255,0.12)" stroke-width="1" fill="none">
+        <circle cx="282" cy="85" r="28" stroke-dasharray="10 6 4 6" class="wind-orbit-ring" />
+        <circle cx="282" cy="85" r="46" stroke-dasharray="20 9 7 10" class="wind-orbit-ring-reverse" />
+        <circle cx="282" cy="85" r="66" stroke-dasharray="14 12 6 10" class="wind-orbit-ring" />
+        <circle cx="282" cy="85" r="88" stroke-dasharray="26 14 10 12" opacity="0.55" />
+      </g>
+
+      <!-- Dynamically Rotated Wind Flow Streamlines aligned with current().windDirection -->
+      <g
+        [attr.transform]="'rotate(' + windFlowRotation() + ' 282 85)'"
+        class="transition-transform duration-700 ease-out"
+      >
+        <g stroke="rgba(255,255,255,0.18)" stroke-width="1.15" stroke-linecap="round" class="wind-stream-lines">
+          <path d="M 60 30 Q 175 12, 282 42 T 460 28" />
+          <path d="M 40 58 Q 165 42, 282 66 T 470 54" />
+          <path d="M 30 85 Q 160 75, 282 85 T 475 85" stroke="rgba(56, 189, 248, 0.32)" />
+          <path d="M 40 112 Q 165 102, 282 108 T 470 116" />
+          <path d="M 60 140 Q 175 126, 282 132 T 460 144" />
+        </g>
+
+        <!-- Animated High-Velocity Wind Particle Streaks -->
+        <g stroke="rgba(125, 211, 252, 0.45)" stroke-width="1.5" stroke-linecap="round" class="wind-particles">
+          <path d="M 110 48 Q 195 36, 265 56" />
+          <path d="M 155 85 Q 225 80, 310 85" />
+          <path d="M 125 120 Q 205 110, 290 116" />
+          <path d="M 235 64 Q 315 58, 385 70" />
+        </g>
+      </g>
+    </svg>
+
+    <!-- Left Live Wind Telemetry Readout -->
+    <div class="relative z-10 flex h-full flex-col justify-between">
+      <div>
+        <h2 id="wind-map-heading" class="text-sm font-medium text-white/95">Wind Map</h2>
+        <p class="mt-0.5 text-[11px] text-white/45">
+          Gusts {{ round(current().windGusts) }} km/h · {{ round(current().windDirection) }}° {{ windCompassShort() }}
+        </p>
+      </div>
+
+      <div class="mt-3">
+        <p class="text-2xl font-medium tracking-tight text-white">
+          {{ round(current().windSpeed) }}
+          <span class="text-base font-normal text-white/80">km/h</span>
+        </p>
+        <p class="mt-0.5 text-xs text-white/60">{{ windDirectionFull() }}</p>
+      </div>
+    </div>
+
+    <!-- Center-Right Frosted Location Pin + Live Directional Compass Ring -->
+    <div class="relative z-10 mr-4 sm:mr-9 flex items-center justify-center">
+      <!-- Rotating Wind Bearing Indicator Ring -->
+      <svg
+        class="pointer-events-none absolute h-16 w-16 overflow-visible transition-transform duration-700 ease-out"
+        [style.transform]="'rotate(' + windFlowRotation() + 'deg)'"
+        viewBox="0 0 64 64"
+        aria-hidden="true"
+      >
+        <circle
+          cx="32"
+          cy="32"
+          r="27"
+          fill="none"
+          stroke="rgba(255,255,255,0.14)"
+          stroke-width="1"
+          stroke-dasharray="4 4"
+        />
+        <!-- Directional Arrowhead showing live wind vector -->
+        <polygon points="32,1 28,8 32,6 36,8" fill="#38bdf8" />
+      </svg>
+
+      <div
+        class="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.16] bg-white/[0.12] text-white shadow-lg backdrop-blur-md"
+      >
+        <svg class="h-5 w-5 fill-white" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+          />
         </svg>
       </div>
-
-      <p class="text-xs text-slate-400">{{ baroMeta().note }}</p>
-    </article>
-
-    <!-- 6. APPARENT TEMPERATURE & VISIBILITY / CLOUD CEILING -->
-    <article class="instrument-card animate-fade-up stagger-6 flex flex-col justify-between rounded-[1.75rem] p-5">
-      <div class="flex items-center justify-between border-b border-white/8 pb-3">
-        <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-          06 // Thermal & Optics
-        </span>
-        <span class="rounded-full bg-white/[0.06] px-2.5 py-0.5 font-mono text-[10px] text-slate-200">
-          {{ thermalDelta().badge }}
-        </span>
-      </div>
-
-      <div class="my-4 grid grid-cols-2 gap-3">
-        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-          <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Feels Like</p>
-          <p class="mt-1 font-display text-3xl font-bold text-white">
-            {{ feelsLikeDisplay() }}°<span class="text-base font-normal text-slate-400">{{ unit() }}</span>
-          </p>
-        </div>
-
-        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-          <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Visibility</p>
-          <p class="mt-1 font-display text-3xl font-bold text-white">
-            {{ current().visibilityKm }}<span class="ml-1 font-mono text-xs font-normal text-slate-400">km</span>
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between text-xs text-slate-400">
-        <span>Cloud Cover · <strong class="font-mono text-slate-200">{{ round(current().cloudCover) }}%</strong></span>
-        <span>Precip · <strong class="font-mono text-slate-200">{{ current().precipitationMm }} mm</strong></span>
-      </div>
-    </article>
-  </div>
-</section>
+    </div>
+  </section>
+</div>
