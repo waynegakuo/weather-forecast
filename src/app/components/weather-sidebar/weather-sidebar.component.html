@@ -1,21 +1,103 @@
-<div class="flex flex-col items-center px-4 pt-4" animate.enter="animate-scale-in">
-  <span class="text-7xl drop-shadow-lg" aria-hidden="true">{{ weather().current.icon }}</span>
-  <p class="mt-2 text-center text-sm font-medium text-sky-100/90">
-    {{ weather().current.description | titlecase }}
-  </p>
+<div class="flex h-full flex-col justify-between gap-6" animate.enter="animate-scale-in">
+  <!-- Location & Coordinates Telemetry Header -->
+  <div>
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <div class="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-3 py-1">
+        <span
+          class="h-1.5 w-1.5 rounded-full"
+          [class.bg-amber-300]="weather().current.isDay"
+          [class.shadow-[0_0_8px_#fde047]]="weather().current.isDay"
+          [class.bg-indigo-400]="!weather().current.isDay"
+          [class.shadow-[0_0_8px_#818cf8]]="!weather().current.isDay"
+        ></span>
+        <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200">
+          {{ weather().current.isDay ? 'Local Daylight' : 'Local Night' }} · {{ weather().timezoneAbbreviation }}
+        </span>
+      </div>
 
-  <div class="mt-4 flex items-start gap-1">
-    <span class="font-display text-7xl font-bold tracking-tight text-white">
-      {{ weather().current.temperature | number: '1.0-0' }}
-    </span>
-    <span class="mt-2 text-2xl font-medium text-slate-300">°C</span>
+      @if (weather().countryCode) {
+        <span class="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] font-semibold tracking-wider text-slate-300">
+          {{ weather().countryCode }}
+        </span>
+      }
+    </div>
+
+    <h2 class="font-display mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      {{ weather().locationName }}
+    </h2>
+    @if (weather().regionLabel) {
+      <p class="mt-0.5 text-sm font-medium text-slate-300/90">{{ weather().regionLabel }}</p>
+    }
+
+    <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-slate-400">
+      <span>{{ coordinatesLabel() }}</span>
+      <span>·</span>
+      <span>ELEV {{ weather().elevation }}m</span>
+      <span>·</span>
+      <span>{{ weather().current.observedAt | date: 'EEE, MMM d · HH:mm' }}</span>
+    </div>
   </div>
 
-  <div class="mt-6 w-full border-t border-white/10 pt-6 text-center">
-    <p class="font-display text-lg font-semibold text-white">{{ weather().locationLabel }}</p>
-    <p class="mt-1 text-sm text-slate-300">
-      {{ weather().current.observedAt | date: 'EEE, MMM d · h:mm a' }}
+  <!-- Massive Temperature & Bespoke Vector Artwork -->
+  <div class="my-2 flex items-center justify-between gap-3">
+    <div class="flex items-start">
+      <span class="hero-temp-readout font-display font-bold leading-none tracking-[-0.05em] text-white">
+        {{ currentTemp() }}
+      </span>
+      <span class="mt-2 font-display text-3xl font-light text-sky-200/80">°{{ unit() }}</span>
+    </div>
+
+    <div class="shrink-0">
+      <app-weather-icon
+        [code]="weather().current.weatherCode"
+        [isDay]="weather().current.isDay"
+        [size]="112"
+      />
+    </div>
+  </div>
+
+  <!-- Editorial Condition Title + Diurnal High/Low Pills -->
+  <div>
+    <div class="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-4">
+      <p class="font-editorial text-2xl italic tracking-wide text-sky-100">
+        {{ weather().current.description }}
+      </p>
+
+      <div class="flex items-center gap-2 font-mono text-xs">
+        <span class="rounded-full bg-white/[0.07] px-2.5 py-1 text-white">
+          H <strong class="font-semibold">{{ todayHigh() }}°</strong>
+        </span>
+        <span class="rounded-full bg-white/[0.04] px-2.5 py-1 text-slate-300">
+          L <strong class="font-semibold">{{ todayLow() }}°</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Synthesized Meteorological Dispatch -->
+    <p class="mt-4 text-xs leading-relaxed text-slate-300/95">
+      {{ narrative() }}
     </p>
-    <p class="mt-1 text-xs text-slate-400">{{ weather().timezone }}</p>
+  </div>
+
+  <!-- Quick Surface Readout Matrix -->
+  <div class="grid grid-cols-2 gap-2.5 pt-1">
+    <div class="rounded-2xl border border-white/8 bg-white/[0.03] px-3.5 py-2.5">
+      <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Apparent</p>
+      <p class="mt-0.5 font-mono text-sm font-semibold text-white">{{ feelsLikeTemp() }}°{{ unit() }}</p>
+    </div>
+    <div class="rounded-2xl border border-white/8 bg-white/[0.03] px-3.5 py-2.5">
+      <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Cloud Deck</p>
+      <p class="mt-0.5 font-mono text-sm font-semibold text-white">{{ round(weather().current.cloudCover) }}%</p>
+    </div>
+    <div class="rounded-2xl border border-white/8 bg-white/[0.03] px-3.5 py-2.5">
+      <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Visibility</p>
+      <p class="mt-0.5 font-mono text-sm font-semibold text-white">{{ weather().current.visibilityKm }} km</p>
+    </div>
+    <div class="rounded-2xl border border-white/8 bg-white/[0.03] px-3.5 py-2.5">
+      <p class="font-mono text-[10px] uppercase tracking-wider text-slate-400">Timezone</p>
+      <p class="mt-0.5 truncate font-mono text-xs font-medium text-slate-200" [title]="weather().timezone">
+        {{ weather().timezone }}
+      </p>
+    </div>
   </div>
 </div>

@@ -1,14 +1,27 @@
-<div class="flex h-full flex-col gap-8 px-5 py-8 lg:px-10" animate.enter="animate-fade-up">
-  <app-week-forecast [daily]="weather().daily" />
-  <app-highlights-grid [current]="weather().current" />
-  <footer class="mt-auto pb-2 text-center text-xs text-slate-500">
-    Built with care by
-    <a
-      class="text-sky-400/90 underline-offset-2 hover:underline"
-      href="https://github.com/waynegakuo"
-      target="_blank"
-      rel="noopener noreferrer"
-      >Wayne Gakuo</a
-    >
+<div class="flex h-full flex-col gap-5" animate.enter="animate-fade-up">
+  @if (weather().hourly.length) {
+    <app-hourly-chart [hourly]="weather().hourly" [unit]="unit()" />
+  }
+
+  <app-week-forecast
+    [daily]="weather().daily"
+    [currentTemp]="weather().current.temperature"
+    [unit]="unit()"
+  />
+
+  <app-highlights-grid [current]="weather().current" [unit]="unit()" />
+
+  <footer class="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-white/8 pt-4 font-mono text-[11px] text-slate-400">
+    <span>SYNOPTIC TELEMETRY · WMO STANDARDS · OPEN-METEO</span>
+    <span>
+      Crafted by
+      <a
+        class="text-sky-300 underline-offset-4 transition-colors hover:text-white hover:underline"
+        href="https://github.com/waynegakuo"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Wayne Gakuo</a
+      >
+    </span>
   </footer>
 </div>

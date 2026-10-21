@@ -1,11 +1,13 @@
 @use 'tailwindcss';
 
-@theme {
-  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@400;500;600;700&display=swap');
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
 
 html,
 body {
@@ -13,13 +15,30 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  background: #0f172a;
+  -moz-osx-font-smoothing: grayscale;
+  background: #060b16;
+  color: #f8fafc;
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-temp-readout {
+  font-size: clamp(5rem, 9vw, 6.75rem);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
 }
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -39,7 +58,7 @@ body {
 @keyframes scale-in {
   from {
     opacity: 0;
-    transform: scale(0.92);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
@@ -50,7 +69,7 @@ body {
 @keyframes pulse-soft {
   0%,
   100% {
-    opacity: 0.6;
+    opacity: 0.55;
   }
   50% {
     opacity: 1;
@@ -59,15 +78,15 @@ body {
 
 @keyframes bg-ken-burns {
   from {
-    transform: scale(1.04);
+    transform: scale(1.03);
   }
   to {
-    transform: scale(1.1);
+    transform: scale(1.09);
   }
 }
 
 .animate-fade-up {
-  animation: fade-up 0.45s ease-out both;
+  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-fade-in {
@@ -75,7 +94,7 @@ body {
 }
 
 .animate-scale-in {
-  animation: scale-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: scale-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-pulse-soft {
@@ -83,88 +102,98 @@ body {
 }
 
 .stagger-1 {
-  animation-delay: 0.05s;
+  animation-delay: 0.04s;
 }
 .stagger-2 {
-  animation-delay: 0.1s;
+  animation-delay: 0.09s;
 }
 .stagger-3 {
-  animation-delay: 0.15s;
+  animation-delay: 0.14s;
 }
 .stagger-4 {
-  animation-delay: 0.2s;
+  animation-delay: 0.19s;
 }
 .stagger-5 {
-  animation-delay: 0.25s;
+  animation-delay: 0.24s;
 }
 .stagger-6 {
-  animation-delay: 0.3s;
+  animation-delay: 0.29s;
 }
 .stagger-7 {
-  animation-delay: 0.35s;
+  animation-delay: 0.34s;
 }
 
-/* Glassmorphism */
-.glass-shell {
-  background: rgb(255 255 255 / 0.07);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border-bottom: 1px solid rgb(255 255 255 / 0.12);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
-}
-
-@media (min-width: 1024px) {
-  .glass-shell {
-    border-bottom: none;
-  }
-}
-
-.glass-header {
-  background: rgb(255 255 255 / 0.05);
-  border-bottom: 1px solid rgb(255 255 255 / 0.1);
-  backdrop-filter: blur(12px);
-}
-
-.glass-block {
-  background: rgb(255 255 255 / 0.03);
-  border-bottom: 1px solid rgb(255 255 255 / 0.08);
-}
-
-.glass-panel {
-  background: rgb(255 255 255 / 0.1);
-  backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
-  border: 1px solid rgb(255 255 255 / 0.14);
+/* Precision Tactile Instrument Surfaces */
+.instrument-bar {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.72) 0%, rgba(9, 14, 28, 0.82) 100%);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   box-shadow:
-    0 8px 32px rgb(0 0 0 / 0.2),
-    inset 0 1px 0 rgb(255 255 255 / 0.12);
+    0 18px 48px -12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
-.glass-card {
-  background: rgb(255 255 255 / 0.11);
-  backdrop-filter: blur(14px) saturate(125%);
-  -webkit-backdrop-filter: blur(14px) saturate(125%);
-  border: 1px solid rgb(255 255 255 / 0.16);
+.instrument-hero-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09) 0%, rgba(15, 23, 42, 0.68) 100%);
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    0 4px 24px rgb(0 0 0 / 0.15),
-    inset 0 1px 0 rgb(255 255 255 / 0.1);
+    0 24px 60px -15px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.instrument-card {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.065) 0%, rgba(15, 23, 42, 0.58) 100%);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 14px 36px -10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.11);
   transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease;
+    border-color 0.25s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease;
 }
 
-.glass-card:hover {
-  transform: translateY(-2px);
-  border-color: rgb(255 255 255 / 0.22);
-  background: rgb(255 255 255 / 0.14);
+.instrument-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 18px 42px -10px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.instrument-subcard {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Mercury / Apple Weather Thermal Spectrum Bars */
+.thermal-range-bar {
+  background: linear-gradient(90deg, #38bdf8 0%, #34d399 38%, #fbbf24 74%, #fb7185 100%);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
+}
+
+/* WHO 11-Point UV Chromatic Spectrum */
+.uv-spectrum-bar {
+  background: linear-gradient(
+    90deg,
+    #34d399 0%,
+    #a3e635 22%,
+    #facc15 45%,
+    #fb923c 68%,
+    #f43f5e 86%,
+    #c084fc 100%
+  );
 }
 
 .glass-input {
   color: #fff;
-  background: rgb(255 255 255 / 0.12);
-  border: 1px solid rgb(255 255 255 / 0.18);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(12px);
   transition:
     border-color 0.2s ease,
     background 0.2s ease,
@@ -172,37 +201,58 @@ body {
 }
 
 .glass-input::placeholder {
-  color: rgb(203 213 225 / 0.75);
+  color: rgba(148, 163, 184, 0.85);
 }
 
 .glass-input:focus-visible {
-  border-color: rgb(125 211 252 / 0.55);
-  background: rgb(255 255 255 / 0.16);
-  box-shadow: 0 0 0 3px rgb(56 189 248 / 0.2);
+  border-color: rgba(56, 189, 248, 0.65);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
 }
 
 .glass-button {
-  color: #0f172a;
-  background: rgb(255 255 255 / 0.92);
-  border: 1px solid rgb(255 255 255 / 0.35);
-  backdrop-filter: blur(8px);
+  color: #090d16;
+  background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   transition:
     background 0.2s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
 .glass-button:hover:not(:disabled) {
-  background: #fff;
+  background: #ffffff;
   transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.25);
 }
 
 .glass-button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .weather-scene__photo {
-  animation: bg-ken-burns 28s ease-in-out infinite alternate;
+  animation: bg-ken-burns 32s ease-in-out infinite alternate;
+}
+
+.hourly-scroll::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  height: 5px;
+}
+
+.hourly-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 9999px;
+}
+
+.hourly-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
