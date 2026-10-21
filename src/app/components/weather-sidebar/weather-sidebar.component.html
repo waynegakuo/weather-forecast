@@ -18,7 +18,7 @@
     <div class="flex h-full flex-col justify-between gap-2">
       <div>
         <div class="flex items-center gap-3">
-          <span class="text-[clamp(3.6rem,5.5vh+2.2vw,6.1rem)] font-light leading-none tracking-tight text-white">
+          <span class="hero-temp-value font-light leading-none tracking-tight text-white">
             {{ currentTemp() }}°
           </span>
           <app-weather-icon
@@ -50,7 +50,7 @@
       </div>
 
       <div class="mt-2">
-        <h2 class="text-[clamp(1.35rem,2vh+0.65vw,1.85rem)] font-medium leading-tight tracking-tight text-white">
+        <h2 class="hero-headline-value font-medium leading-tight tracking-tight text-white">
           {{ presentation().headline }}
         </h2>
         <p class="mt-0.5 text-sm sm:text-base font-normal text-white/60">

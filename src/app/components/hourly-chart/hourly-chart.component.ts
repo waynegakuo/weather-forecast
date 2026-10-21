@@ -23,21 +23,12 @@ export interface HourlySlotView {
         @for (slot of slots(); track slot.index) {
           <button
             type="button"
-            class="flex min-w-[4rem] flex-1 flex-col items-center justify-between rounded-2xl px-2 py-1.5 transition-all focus:outline-none"
-            [class.bg-white/[0.06]]="selectedIndex() === slot.index"
-            [class.border]="selectedIndex() === slot.index"
-            [class.border-white/[0.12]]="selectedIndex() === slot.index"
-            [class.shadow-sm]="selectedIndex() === slot.index"
-            [class.border-transparent]="selectedIndex() !== slot.index"
-            [class.hover:bg-white/[0.03]]="selectedIndex() !== slot.index"
+            [class]="selectedIndex() === slot.index ? 'flex min-w-[4rem] flex-1 flex-col items-center justify-between rounded-2xl border border-white/[0.12] bg-white/[0.06] px-2 py-1.5 shadow-sm transition-all focus:outline-none' : 'flex min-w-[4rem] flex-1 flex-col items-center justify-between rounded-2xl border border-transparent px-2 py-1.5 hover:bg-white/[0.03] transition-all focus:outline-none'"
             (click)="selectedIndex.set(slot.index)"
           >
             <!-- Time Label -->
             <span
-              class="text-xs tracking-normal"
-              [class.font-medium]="slot.data.isNow || selectedIndex() === slot.index"
-              [class.text-white]="slot.data.isNow || selectedIndex() === slot.index"
-              [class.text-white/65]="!slot.data.isNow && selectedIndex() !== slot.index"
+              [class]="slot.data.isNow || selectedIndex() === slot.index ? 'text-xs font-medium tracking-normal text-white' : 'text-xs tracking-normal text-white/65'"
             >
               {{ slot.data.hourLabel }}
             </span>

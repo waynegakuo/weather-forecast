@@ -1,8 +1,5 @@
 <p
-  class="text-xs sm:text-sm tracking-normal"
-  [class.font-medium]="selected()"
-  [class.text-white]="selected()"
-  [class.text-white/75]="!selected()"
+  [class]="selected() ? 'text-xs sm:text-sm font-medium tracking-normal text-white' : 'text-xs sm:text-sm tracking-normal text-white/75'"
 >
   {{ day().date | date: 'EEE' }}
 </p>

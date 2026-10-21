@@ -13,3 +13,11 @@
     linear-gradient(95deg, rgba(20, 22, 27, 0.72) 0%, rgba(24, 26, 31, 0.25) 55%, rgba(20, 22, 27, 0.45) 100%),
     linear-gradient(180deg, rgba(18, 20, 24, 0.08) 0%, rgba(18, 20, 24, 0.58) 100%);
 }
+
+.hero-temp-value {
+  font-size: clamp(3.5rem, 5vh + 2vw, 5.75rem);
+}
+
+.hero-headline-value {
+  font-size: clamp(1.35rem, 1.8vh + 0.6vw, 1.8rem);
+}

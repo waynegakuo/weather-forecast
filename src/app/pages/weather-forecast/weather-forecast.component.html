@@ -21,13 +21,7 @@
       <!-- 1. Home / Dashboard -->
       <button
         type="button"
-        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
-        [class.bg-white/[0.12]]="activeNav() === 'home'"
-        [class.text-white]="activeNav() === 'home'"
-        [class.shadow-inner]="activeNav() === 'home'"
-        [class.text-white/45]="activeNav() !== 'home'"
-        [class.hover:bg-white/[0.06]]="activeNav() !== 'home'"
-        [class.hover:text-white/80]="activeNav() !== 'home'"
+        [class]="activeNav() === 'home' ? 'flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.12] text-white shadow-inner transition-all' : 'flex h-11 w-11 items-center justify-center rounded-2xl text-white/45 hover:bg-white/[0.06] hover:text-white/80 transition-all'"
         (click)="onNavClick('home')"
         title="Dashboard overview"
         aria-label="Dashboard overview"
@@ -40,12 +34,7 @@
       <!-- 2. Saved / Search Locations -->
       <button
         type="button"
-        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
-        [class.bg-white/[0.12]]="activeNav() === 'locations'"
-        [class.text-white]="activeNav() === 'locations'"
-        [class.text-white/45]="activeNav() !== 'locations'"
-        [class.hover:bg-white/[0.06]]="activeNav() !== 'locations'"
-        [class.hover:text-white/80]="activeNav() !== 'locations'"
+        [class]="activeNav() === 'locations' ? 'flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.12] text-white transition-all' : 'flex h-11 w-11 items-center justify-center rounded-2xl text-white/45 hover:bg-white/[0.06] hover:text-white/80 transition-all'"
         (click)="onNavClick('locations')"
         title="Search city or location"
         aria-label="Search city or location"
@@ -58,12 +47,7 @@
       <!-- 3. Compass / Wind & GPS -->
       <button
         type="button"
-        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
-        [class.bg-white/[0.12]]="activeNav() === 'compass'"
-        [class.text-white]="activeNav() === 'compass'"
-        [class.text-white/45]="activeNav() !== 'compass'"
-        [class.hover:bg-white/[0.06]]="activeNav() !== 'compass'"
-        [class.hover:text-white/80]="activeNav() !== 'compass'"
+        [class]="activeNav() === 'compass' ? 'flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.12] text-white transition-all' : 'flex h-11 w-11 items-center justify-center rounded-2xl text-white/45 hover:bg-white/[0.06] hover:text-white/80 transition-all'"
         (click)="useMyLocation()"
         title="Use GPS coordinates"
         aria-label="Use GPS coordinates"
@@ -77,12 +61,7 @@
       <!-- 4. Analytics / Extended Metrics -->
       <button
         type="button"
-        class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
-        [class.bg-white/[0.12]]="extendedMetricsOpen()"
-        [class.text-white]="extendedMetricsOpen()"
-        [class.text-white/45]="!extendedMetricsOpen()"
-        [class.hover:bg-white/[0.06]]="!extendedMetricsOpen()"
-        [class.hover:text-white/80]="!extendedMetricsOpen()"
+        [class]="extendedMetricsOpen() ? 'flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.12] text-white transition-all' : 'flex h-11 w-11 items-center justify-center rounded-2xl text-white/45 hover:bg-white/[0.06] hover:text-white/80 transition-all'"
         [attr.aria-expanded]="extendedMetricsOpen()"
         (click)="onNavClick('analytics')"
         title="Toggle extended metrics"
@@ -285,9 +264,7 @@
         >
           <!-- Sliding Glassmorphic Pill Knob -->
           <span
-            class="glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-full transition-transform duration-300 ease-out"
-            [class.translate-x-full]="unit() === 'F'"
-            [class.translate-x-0]="unit() === 'C'"
+            [class]="unit() === 'F' ? 'glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] translate-x-full rounded-full transition-transform duration-300 ease-out' : 'glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] translate-x-0 rounded-full transition-transform duration-300 ease-out'"
             aria-hidden="true"
           ></span>
 
@@ -295,12 +272,7 @@
             type="button"
             role="tab"
             [attr.aria-selected]="unit() === 'C'"
-            class="relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs transition-colors duration-200 focus:outline-none"
-            [class.font-semibold]="unit() === 'C'"
-            [class.text-white]="unit() === 'C'"
-            [class.font-medium]="unit() !== 'C'"
-            [class.text-white/50]="unit() !== 'C'"
-            [class.hover:text-white/80]="unit() !== 'C'"
+            [class]="unit() === 'C' ? 'relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold text-white transition-colors duration-200 focus:outline-none' : 'relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium text-white/50 hover:text-white/80 transition-colors duration-200 focus:outline-none'"
             (click)="setUnit('C')"
             title="Celsius (°C)"
           >
@@ -311,12 +283,7 @@
             type="button"
             role="tab"
             [attr.aria-selected]="unit() === 'F'"
-            class="relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs transition-colors duration-200 focus:outline-none"
-            [class.font-semibold]="unit() === 'F'"
-            [class.text-white]="unit() === 'F'"
-            [class.font-medium]="unit() !== 'F'"
-            [class.text-white/50]="unit() !== 'F'"
-            [class.hover:text-white/80]="unit() !== 'F'"
+            [class]="unit() === 'F' ? 'relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold text-white transition-colors duration-200 focus:outline-none' : 'relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium text-white/50 hover:text-white/80 transition-colors duration-200 focus:outline-none'"
             (click)="setUnit('F')"
             title="Fahrenheit (°F)"
           >

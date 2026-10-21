@@ -169,9 +169,7 @@
 
     <!-- Smooth CSS Grid Accordion Drawer for Extended Telemetry (Sunrise, Sunset, UV, Feels Like) -->
     <div
-      class="accordion-shell"
-      [class.accordion-shell--open]="showExtendedMetrics()"
-      [class.mt-3]="showExtendedMetrics()"
+      [class]="showExtendedMetrics() ? 'accordion-shell accordion-shell--open mt-3' : 'accordion-shell'"
       [attr.aria-hidden]="!showExtendedMetrics()"
     >
       <div class="accordion-inner">
@@ -210,9 +208,7 @@
       >
         <!-- Sliding Glassmorphic Pill Knob -->
         <span
-          class="glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-full transition-transform duration-300 ease-out"
-          [class.translate-x-full]="citiesTab() === 'recent'"
-          [class.translate-x-0]="citiesTab() === 'popular'"
+          [class]="citiesTab() === 'recent' ? 'glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] translate-x-full rounded-full transition-transform duration-300 ease-out' : 'glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] translate-x-0 rounded-full transition-transform duration-300 ease-out'"
           aria-hidden="true"
         ></span>
 
@@ -220,12 +216,7 @@
           type="button"
           role="tab"
           [attr.aria-selected]="citiesTab() === 'popular'"
-          class="relative z-10 flex items-center justify-center rounded-full px-3.5 py-1.5 text-xs transition-colors duration-200 focus:outline-none"
-          [class.font-semibold]="citiesTab() === 'popular'"
-          [class.text-white]="citiesTab() === 'popular'"
-          [class.font-medium]="citiesTab() !== 'popular'"
-          [class.text-white/50]="citiesTab() !== 'popular'"
-          [class.hover:text-white/80]="citiesTab() !== 'popular'"
+          [class]="citiesTab() === 'popular' ? 'relative z-10 flex items-center justify-center rounded-full px-3.5 py-1.5 text-xs font-semibold text-white transition-colors duration-200 focus:outline-none' : 'relative z-10 flex items-center justify-center rounded-full px-3.5 py-1.5 text-xs font-medium text-white/50 hover:text-white/80 transition-colors duration-200 focus:outline-none'"
           (click)="citiesTabChange.emit('popular')"
         >
           Popular Cities
@@ -235,22 +226,13 @@
           type="button"
           role="tab"
           [attr.aria-selected]="citiesTab() === 'recent'"
-          class="relative z-10 flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs transition-colors duration-200 focus:outline-none"
-          [class.font-semibold]="citiesTab() === 'recent'"
-          [class.text-white]="citiesTab() === 'recent'"
-          [class.font-medium]="citiesTab() !== 'recent'"
-          [class.text-white/50]="citiesTab() !== 'recent'"
-          [class.hover:text-white/80]="citiesTab() !== 'recent'"
+          [class]="citiesTab() === 'recent' ? 'relative z-10 flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold text-white transition-colors duration-200 focus:outline-none' : 'relative z-10 flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium text-white/50 hover:text-white/80 transition-colors duration-200 focus:outline-none'"
           (click)="citiesTabChange.emit('recent')"
         >
           <span>Recently Searched</span>
           @if (recentCities().length > 0) {
             <span
-              class="rounded-full px-1.5 py-0.2 text-[10px] leading-tight transition-colors"
-              [class.bg-white/25]="citiesTab() === 'recent'"
-              [class.text-white]="citiesTab() === 'recent'"
-              [class.bg-white/10]="citiesTab() !== 'recent'"
-              [class.text-white/70]="citiesTab() !== 'recent'"
+              [class]="citiesTab() === 'recent' ? 'rounded-full bg-white/25 px-1.5 py-0.5 text-[10px] leading-tight text-white transition-colors' : 'rounded-full bg-white/10 px-1.5 py-0.5 text-[10px] leading-tight text-white/70 transition-colors'"
             >
               {{ recentCities().length }}
             </span>
@@ -327,9 +309,7 @@
         <!-- Smooth Expandable Accordion for Additional Cities ("See All") -->
         @if (extraCities().length > 0) {
           <div
-            class="accordion-shell"
-            [class.accordion-shell--open]="showAllCities()"
-            [class.mt-1.5]="showAllCities()"
+            [class]="showAllCities() ? 'accordion-shell accordion-shell--open mt-1.5' : 'accordion-shell'"
             [attr.aria-hidden]="!showAllCities()"
           >
             <div class="accordion-inner flex flex-col gap-1.5">
@@ -380,13 +360,8 @@
 
   <!-- 3. DYNAMIC WIND MAP CARD (Bottom Right - Live Direction & Speed Animated Streamlines) -->
   <section
-    class="wind-map-card relative flex flex-1 items-center justify-between overflow-hidden rounded-[1.25rem] border border-white/[0.08] transition-all duration-300 ease-out"
-    [class.min-h-[72px]]="isWindMapCompact()"
-    [class.px-3.5]="isWindMapCompact()"
-    [class.py-2]="isWindMapCompact()"
-    [class.min-h-[112px]]="!isWindMapCompact()"
-    [class.p-3.5]="!isWindMapCompact()"
-    [class.sm:p-4]="!isWindMapCompact()"
+    class="wind-map-card relative flex flex-1 items-center justify-between gap-3 overflow-hidden rounded-[1.25rem] border border-white/[0.08] transition-all duration-300 ease-out"
+    [class.wind-map-card--compact]="isWindMapCompact()"
     [style.--wind-speed]="windStreamDuration()"
     aria-labelledby="wind-map-heading"
   >
@@ -439,38 +414,30 @@
     </svg>
 
     <!-- Left Live Wind Telemetry Readout (Fluidly Adapts When Accordions Expand) -->
-    <div class="relative z-10 flex h-full flex-col justify-between transition-all duration-300 ease-out">
+    <div class="relative z-10 flex h-full min-w-0 flex-1 flex-col justify-between transition-all duration-300 ease-out">
       <div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <h2
             id="wind-map-heading"
-            class="font-medium text-white/95 transition-all duration-300"
-            [class.text-xs]="isWindMapCompact()"
-            [class.text-sm]="!isWindMapCompact()"
+            [class]="isWindMapCompact() ? 'text-xs font-medium text-white/95 transition-all duration-300' : 'text-sm font-medium text-white/95 transition-all duration-300'"
           >
             Wind Map
           </h2>
           @if (isWindMapCompact()) {
-            <span class="rounded-md border border-white/[0.08] bg-white/[0.06] px-1.5 py-0.2 text-[10px] text-sky-300">
+            <span class="rounded-md border border-white/[0.08] bg-white/[0.06] px-1.5 py-0.5 text-[10px] text-sky-300">
               {{ windIntensityMeta().label }}
             </span>
           }
         </div>
         <p
-          class="text-white/50 transition-all duration-300"
-          [class.text-[10px]]="isWindMapCompact()"
-          [class.leading-tight]="isWindMapCompact()"
-          [class.mt-0.5]="!isWindMapCompact()"
-          [class.text-xs]="!isWindMapCompact()"
+          [class]="isWindMapCompact() ? 'text-[10px] leading-tight text-white/50 transition-all duration-300' : 'mt-0.5 text-xs text-white/50 transition-all duration-300'"
         >
           Gusts {{ round(current().windGusts) }} km/h · {{ round(current().windDirection) }}° {{ windCompassShort() }}
         </p>
 
         <!-- Dynamic Beaufort Scale & Wind Force Strip (Fills Middle Space When Open, Collapses Smoothly When Compact) -->
         <div
-          class="accordion-shell"
-          [class.accordion-shell--open]="!isWindMapCompact()"
-          [class.mt-2]="!isWindMapCompact()"
+          [class]="!isWindMapCompact() ? 'accordion-shell accordion-shell--open mt-2' : 'accordion-shell'"
           [attr.aria-hidden]="isWindMapCompact()"
         >
           <div class="accordion-inner">
@@ -479,10 +446,8 @@
               <div class="flex items-end gap-0.5" aria-hidden="true">
                 @for (bar of [1, 2, 3, 4, 5]; track bar) {
                   <span
-                    class="w-1 rounded-full transition-all duration-300"
+                    [class]="bar <= windIntensityMeta().activeBars ? 'w-1 rounded-full bg-sky-400 transition-all duration-300' : 'w-1 rounded-full bg-white/15 transition-all duration-300'"
                     [style.height.px]="4 + bar * 2"
-                    [class.bg-sky-400]="bar <= windIntensityMeta().activeBars"
-                    [class.bg-white/15]="bar > windIntensityMeta().activeBars"
                   ></span>
                 }
               </div>
@@ -498,34 +463,22 @@
       </div>
 
       <div
-        class="transition-all duration-300"
-        [class.mt-1]="isWindMapCompact()"
-        [class.mt-2]="!isWindMapCompact()"
+        [class]="isWindMapCompact() ? 'mt-1 transition-all duration-300' : 'mt-2 transition-all duration-300'"
       >
         <p
           class="tracking-tight text-white transition-all duration-300"
-          [class.text-base]="isWindMapCompact()"
-          [class.font-medium]="isWindMapCompact()"
-          [class.leading-tight]="isWindMapCompact()"
-          [class.text-[clamp(1.65rem,2.4vh+0.5vw,2.35rem)]]="!isWindMapCompact()"
-          [class.font-light]="!isWindMapCompact()"
-          [class.leading-none]="!isWindMapCompact()"
+          [class.wind-speed-compact]="isWindMapCompact()"
+          [class.wind-speed-expanded]="!isWindMapCompact()"
         >
           {{ round(current().windSpeed) }}
           <span
-            class="font-normal text-white/75 transition-all duration-300"
-            [class.text-xs]="isWindMapCompact()"
-            [class.text-sm]="!isWindMapCompact()"
+            [class]="isWindMapCompact() ? 'text-xs font-normal text-white/75 transition-all duration-300' : 'text-sm font-normal text-white/75 transition-all duration-300'"
           >
             km/h
           </span>
         </p>
         <p
-          class="text-white/60 transition-all duration-300"
-          [class.text-[10px]]="isWindMapCompact()"
-          [class.leading-tight]="isWindMapCompact()"
-          [class.mt-1]="!isWindMapCompact()"
-          [class.text-xs]="!isWindMapCompact()"
+          [class]="isWindMapCompact() ? 'text-[10px] leading-tight text-white/60 transition-all duration-300' : 'mt-1 text-xs text-white/60 transition-all duration-300'"
         >
           Blowing from {{ windDirectionFull() }}
         </p>
@@ -534,9 +487,7 @@
 
     <!-- Center-Right Frosted Location Pin + Live Directional Compass Ring -->
     <div
-      class="relative z-10 mr-4 sm:mr-9 flex items-center justify-center transition-transform duration-300 ease-out"
-      [class.scale-75]="isWindMapCompact()"
-      [class.scale-105]="!isWindMapCompact()"
+      [class]="isWindMapCompact() ? 'relative z-10 mr-3 sm:mr-8 flex shrink-0 items-center justify-center scale-75 transition-transform duration-300 ease-out' : 'relative z-10 mr-3 sm:mr-8 flex shrink-0 items-center justify-center transition-transform duration-300 ease-out'"
     >
       <!-- Rotating Wind Bearing Indicator Ring (0° = North/Top, points where wind blows TOWARDS) -->
       <svg
