@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#27282E" />
+      <stop offset="100%" stop-color="#16171B" />
+    </linearGradient>
+    <radialGradient id="sun" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FEF08A" />
+      <stop offset="55%" stop-color="#FACC15" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </radialGradient>
+    <linearGradient id="cloud" x1="18" y1="22" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="65%" stop-color="#E2E8F0" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded App Icon Tile -->
+  <rect width="64" height="64" rx="16" fill="url(#bg)" />
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="15.25" stroke="rgba(255,255,255,0.14)" stroke-width="1.5" />
+
+  <!-- Warm Sun Orb & Rays -->
+  <circle cx="24" cy="24" r="10.5" fill="url(#sun)" />
+  <g stroke="#FBBF24" stroke-width="2.2" stroke-linecap="round" opacity="0.85">
+    <line x1="24" y1="8.5" x2="24" y2="11" />
+    <line x1="8.5" y1="24" x2="11" y2="24" />
+    <line x1="13" y1="13" x2="15" y2="15" />
+    <line x1="35" y1="13" x2="33" y2="15" />
+  </g>
+
+  <!-- Layered Matte Cloud -->
+  <path
+    d="M22 47H45.5C49.9 47 53.5 43.4 53.5 39C53.5 34.9 50.4 31.5 46.4 31.1C45.2 25.1 39.9 20.5 33.5 20.5C26.2 20.5 20.3 26.4 20.3 33.7C20.3 34.2 20.3 34.6 20.4 35.1C17.2 35.8 14.8 38.7 14.8 42.2C14.8 44.9 18 47 22 47Z"
+    fill="url(#cloud)"
+  />
+
+  <!-- Sky Blue Rain Streaks -->
+  <g stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round">
+    <line x1="26" y1="51" x2="24" y2="55.5" />
+    <line x1="34" y1="51" x2="32" y2="55.5" />
+    <line x1="42" y1="51" x2="40" y2="55.5" />
+  </g>
+</svg>
