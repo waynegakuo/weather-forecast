@@ -1,16 +1,23 @@
 # Weather Forecast
 
-A modern Angular weather app: search any city, see current conditions and a 7-day outlook.
+A full-viewport, dark matte-glass Angular weather dashboard powered by real-time [Open-Meteo](https://open-meteo.com/) telemetry. Search any city worldwide or use live GPS coordinates to view current conditions, hourly trends, a 7-day outlook, interactive live condition splines, and animated wind streamlines.
 
 ![Weather Forecast](src/assets/screenshots/site.png)
 
+## Features
+
+- **Full-Viewport Matte-Glass Dashboard** — Responsive `100dvh` 2-column layout with a vertical navigation rail, pure upper-atmosphere sky photography, and glassmorphic pill-knob segmented controls.
+- **Dynamic Hero Banner** — Fluid viewport-adaptive temperature readout paired with bespoke animated SVG weather icons, a live telemetry strip (`Feels like`, `UV Index`, `Sunrise`/`Sunset`), and an editorial forecast summary.
+- **Interactive Live Conditions Spline** — Smooth cubic-Bezier temperature/humidity curve with hover scrubbing, contextual status badges, and an expandable telemetry drawer.
+- **Popular & Recently Searched Cities** — Segmented glassmorphic tab switcher that persists recent searches in `localStorage` (`weather_recent_cities_v1`) alongside live-hydrated popular global cities.
+- **Animated Wind Map** — Real-time wind vector streamlines, Beaufort wind scale & 5-bar force meter, and a directional compass ring aligned with live meteorological bearings.
+- **Instant Unit Switching (`°C` | `°F`)** — Seamless Celsius and Fahrenheit conversion across all cards, charts, and city lists.
+
 ## Stack
 
-- **Angular 22.2** — standalone components, signal forms, zoneless change detection
-- **[Open-Meteo](https://open-meteo.com/)** — free geocoding + forecast APIs (no API keys)
-- **Tailwind CSS v4**
-
-Previously this project used OpenWeather + HERE with HTTP interceptors and API keys. That flow is replaced by a single service that calls Open-Meteo directly.
+- **Angular 22.2.3** — Standalone components, Signal Forms, and zoneless change detection
+- **[Open-Meteo](https://open-meteo.com/)** — Free geocoding + weather forecast APIs (no API keys required)
+- **Tailwind CSS v4** — Custom matte-glass surfaces, CSS Grid accordions, and fluid typography
 
 ## Development
 
@@ -27,9 +34,9 @@ Open [http://localhost:4200](http://localhost:4200).
 npm run build
 ```
 
-Output is in `dist/weatherapp`.
+Output is generated in `dist/weatherapp`.
 
-## API notes
+## API Notes
 
 | Step | Endpoint |
 |------|----------|
