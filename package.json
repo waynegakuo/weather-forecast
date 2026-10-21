@@ -11,22 +11,26 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "22.2.0",
-    "@angular/compiler": "22.2.0",
-    "@angular/core": "22.2.0",
-    "@angular/forms": "22.2.0",
-    "@angular/platform-browser": "22.2.0",
-    "@angular/router": "22.2.0",
+    "@angular/common": "^22.2.3",
+    "@angular/compiler": "^22.2.3",
+    "@angular/core": "^22.2.3",
+    "@angular/forms": "^22.2.3",
+    "@angular/platform-browser": "^22.2.3",
+    "@angular/router": "^22.2.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.8.0"
   },
   "devDependencies": {
-    "@angular/build": "22.2.0",
-    "@angular/cli": "22.2.0",
-    "@angular/compiler-cli": "22.2.0",
+    "@angular/build": "^22.2.3",
+    "@angular/cli": "^22.2.3",
+    "@angular/compiler-cli": "^22.2.3",
     "@tailwindcss/postcss": "^4.1.0",
     "postcss": "^8.5.0",
     "tailwindcss": "^4.1.0",
     "typescript": "~6.0.0"
+  },
+  "overrides": {
+    "@modelcontextprotocol/server": "^2.3.1",
+    "vite": "^8.3.5"
   }
 }
