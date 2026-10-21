@@ -93,6 +93,10 @@ export class HighlightsGridComponent {
     return this.activeTabCities().slice(2, 4);
   });
 
+  readonly isWindMapCompact = computed(
+    () => (this.showAllCities() && this.extraCities().length > 0) || this.showExtendedMetrics(),
+  );
+
   readonly liveWavePoints = computed<LiveWavePoint[]>(() => {
     const hrs = this.hourly().slice(0, 8);
     const c = this.current();
@@ -248,6 +252,26 @@ export class HighlightsGridComponent {
     const speed = Math.max(1, this.current().windSpeed);
     const seconds = Math.max(1.1, Math.min(7.5, 18 / Math.sqrt(speed)));
     return `${seconds.toFixed(2)}s`;
+  });
+
+  readonly windIntensityMeta = computed(() => {
+    const s = this.current().windSpeed;
+    if (s < 2) {
+      return { beaufort: 0, label: 'Calm Air', activeBars: 1 };
+    }
+    if (s < 12) {
+      return { beaufort: 2, label: 'Light Breeze', activeBars: 1 };
+    }
+    if (s < 20) {
+      return { beaufort: 3, label: 'Gentle Breeze', activeBars: 2 };
+    }
+    if (s < 29) {
+      return { beaufort: 4, label: 'Moderate Breeze', activeBars: 3 };
+    }
+    if (s < 39) {
+      return { beaufort: 5, label: 'Fresh Breeze', activeBars: 4 };
+    }
+    return { beaufort: 6, label: 'Strong Wind', activeBars: 5 };
   });
 
   formatCityTemp(celsius: number): number {

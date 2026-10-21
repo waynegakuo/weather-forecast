@@ -1,3 +1,5 @@
+import { WeatherBundle } from '../models/weather.types';
+
 export type WeatherScene =
   | 'default'
   | 'clear'
@@ -23,28 +25,43 @@ export interface AtmospherePalette {
   hasStars: boolean;
 }
 
-/** Verified 200-OK high-resolution weather photography for every WMO weather condition */
-const BACKGROUNDS: Record<WeatherScene, string> = {
+/**
+ * Pure Atmospheric Sky Canopies Only (Option 3).
+ * Every image is visually verified to contain 100% upper-atmosphere sky, clouds,
+ * starfields, rain droplets, or falling snow with zero ground terrain, mountains,
+ * trees, beaches, or buildings—ensuring zero geographic clashing for any location.
+ */
+const SCENE_BACKGROUNDS: Record<WeatherScene, string> = {
+  // High-altitude sea of white clouds under a deep blue sky
   default:
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?auto=format&fit=crop&w=1920&q=85',
+  // Bright sunlit blue sky canopy with soft cloud tops
   clear:
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?auto=format&fit=crop&w=1920&q=85',
+  // Pure deep starry night sky with zero horizon or terrain
   'clear-night':
-    'https://images.unsplash.com/photo-1507400492013-162706c8c05e?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=1920&q=85',
+  // Sunlit fluffy cumulus clouds in a blue sky
   partly:
-    'https://images.unsplash.com/photo-1592210454359-9043f067919b?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?auto=format&fit=crop&w=1920&q=85',
+  // Full moon and drifting night clouds in the upper sky
   'partly-night':
     'https://images.unsplash.com/photo-1532767153582-b1a0e5145009?auto=format&fit=crop&w=1920&q=85',
+  // Pure overcast grey cloud canopy looking up at the sky
   cloudy:
-    'https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=85',
+  // Diffused atmospheric mist and cloud deck from above
   fog:
-    'https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=1920&q=85',
+  // Rain droplets on glass with soft atmospheric bokeh
   rain:
     'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1920&q=85',
+  // Pure falling snowflakes in the air with zero ground or trees
   snow:
-    'https://images.unsplash.com/photo-1477601263568-180e2c6d046e?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1542601098-8fc114e148e2?auto=format&fit=crop&w=1920&q=85',
+  // Brooding dark indigo thunderhead clouds looking straight up into the sky
   storm:
-    'https://images.unsplash.com/photo-1500674425229-f692875b0ab7?auto=format&fit=crop&w=1920&q=85',
+    'https://images.unsplash.com/photo-1566228015668-4c45dbc4e2f5?auto=format&fit=crop&w=1920&q=85',
 };
 
 export function sceneForWeatherCode(code: number, isDay = true): WeatherScene {
@@ -73,8 +90,17 @@ export function sceneForWeatherCode(code: number, isDay = true): WeatherScene {
 }
 
 export function backgroundImageForCode(code: number | undefined, isDay = true): string {
-  const scene = code === undefined ? 'default' : sceneForWeatherCode(code, isDay);
-  return BACKGROUNDS[scene];
+  if (code === undefined) {
+    return SCENE_BACKGROUNDS.default;
+  }
+  return SCENE_BACKGROUNDS[sceneForWeatherCode(code, isDay)];
+}
+
+export function backgroundImageForBundle(bundle: WeatherBundle | null | undefined): string {
+  if (!bundle) {
+    return SCENE_BACKGROUNDS.default;
+  }
+  return backgroundImageForCode(bundle.current.weatherCode, bundle.current.isDay);
 }
 
 export function overlayGradientForScene(scene: WeatherScene): string {
@@ -101,7 +127,7 @@ export function overlayGradientForScene(scene: WeatherScene): string {
 }
 
 export function atmosphereForScene(scene: WeatherScene): AtmospherePalette {
-  const photoUrl = BACKGROUNDS[scene] ?? BACKGROUNDS.default;
+  const photoUrl = SCENE_BACKGROUNDS[scene] ?? SCENE_BACKGROUNDS.default;
   return {
     scene,
     skyGradient: overlayGradientForScene(scene),

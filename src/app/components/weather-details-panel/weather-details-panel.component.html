@@ -1,5 +1,6 @@
-<div class="flex h-full min-h-0 flex-col justify-between" animate.enter="animate-fade-up">
+<div class="flex flex-1 h-full min-h-0 flex-col justify-between" animate.enter="animate-fade-up">
   <app-highlights-grid
+    class="flex-1 min-h-0"
     [current]="weather().current"
     [hourly]="weather().hourly"
     [unit]="unit()"

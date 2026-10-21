@@ -7,8 +7,8 @@
   {{ day().date | date: 'EEE' }}
 </p>
 
-<div class="my-2.5 flex flex-col items-center justify-center">
-  <app-weather-icon [code]="day().weatherCode" [isDay]="true" [size]="32" />
+<div class="my-1.5 flex flex-col items-center justify-center">
+  <app-weather-icon [code]="day().weatherCode" [isDay]="true" [size]="40" />
   @if (day().precipitationProbabilityMax >= 20) {
     <span class="mt-0.5 text-[10px] font-medium text-sky-400">
       {{ day().precipitationProbabilityMax }}%

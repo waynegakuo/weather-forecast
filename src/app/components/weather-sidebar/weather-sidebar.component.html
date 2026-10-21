@@ -1,5 +1,5 @@
 <section
-  class="hero-banner relative flex h-full flex-1 flex-col justify-between overflow-hidden rounded-[1.35rem] border border-white/[0.08] p-5 sm:p-7"
+  class="hero-banner relative flex h-full flex-1 flex-col justify-between overflow-hidden rounded-[1.25rem] border border-white/[0.08] p-4 sm:p-5"
   animate.enter="animate-scale-in"
 >
   <!-- Dramatic Atmospheric Sky Photograph -->
@@ -14,23 +14,50 @@
 
   <!-- Main Content Grid inside Hero Banner -->
   <div class="relative z-10 flex flex-1 flex-col justify-between gap-4 sm:flex-row sm:items-end">
-    <!-- Left Side: Giant Thin Temperature, Headline, Subtitle, H/L Rounded Tags -->
-    <div class="flex h-full flex-col justify-between">
-      <div class="flex items-start">
-        <span class="text-6xl sm:text-[5rem] font-light leading-none tracking-tight text-white">
-          {{ currentTemp() }}°
-        </span>
+    <!-- Left Side: Fluid Viewport-Adaptive Temperature, Live Telemetry Strip, Headline, Subtitle, H/L Tags -->
+    <div class="flex h-full flex-col justify-between gap-2">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="text-[clamp(3.6rem,5.5vh+2.2vw,6.1rem)] font-light leading-none tracking-tight text-white">
+            {{ currentTemp() }}°
+          </span>
+          <app-weather-icon
+            [code]="weather().current.weatherCode"
+            [isDay]="weather().current.isDay"
+            [size]="50"
+          />
+        </div>
+
+        <!-- Subtle Contextual Telemetry Strip Bridging the Space Under Temperature -->
+        <div class="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-white/75">
+          <span class="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-black/25 px-2.5 py-0.5 backdrop-blur-md">
+            <span class="text-white/50">Feels like</span>
+            <span class="font-medium text-white">{{ feelsLikeTemp() }}°</span>
+          </span>
+          <span class="inline-flex items-center rounded-lg border border-white/[0.08] bg-black/25 px-2.5 py-0.5 backdrop-blur-md">
+            {{ uvBadge() }}
+          </span>
+          <span class="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-black/25 px-2.5 py-0.5 backdrop-blur-md">
+            @if (weather().current.isDay) {
+              <span class="text-white/50">Sunset</span>
+              <span class="font-medium text-white">{{ weather().current.sunset | date: 'h:mm a' }}</span>
+            } @else {
+              <span class="text-white/50">Sunrise</span>
+              <span class="font-medium text-white">{{ weather().current.sunrise | date: 'h:mm a' }}</span>
+            }
+          </span>
+        </div>
       </div>
 
-      <div class="mt-3">
-        <h2 class="text-2xl sm:text-[1.7rem] font-medium leading-tight tracking-tight text-white">
+      <div class="mt-2">
+        <h2 class="text-[clamp(1.35rem,2vh+0.65vw,1.85rem)] font-medium leading-tight tracking-tight text-white">
           {{ presentation().headline }}
         </h2>
         <p class="mt-0.5 text-sm sm:text-base font-normal text-white/60">
           {{ presentation().subtitle }}
         </p>
 
-        <div class="mt-3 flex items-center gap-2">
+        <div class="mt-2.5 flex items-center gap-2">
           <div class="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.12] px-3 py-1 text-xs backdrop-blur-md">
             <span class="text-white/60">H</span>
             <span class="font-medium text-white">{{ todayHigh() }}°</span>

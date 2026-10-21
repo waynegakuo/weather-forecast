@@ -141,9 +141,9 @@
   </aside>
 
   <!-- Main Full-Viewport Dashboard Content Area -->
-  <div class="relative z-10 flex flex-1 flex-col min-h-0 overflow-y-auto xl:overflow-hidden px-5 py-4 sm:px-7 sm:py-5">
+  <div class="relative z-10 flex flex-1 flex-col min-h-0 overflow-y-auto px-4 py-2.5 sm:px-6 sm:py-3.5">
     <!-- Top Header Bar: Location + Date on Left, Search + Controls on Right -->
-    <header class="relative z-30 mb-4 flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <header class="relative z-30 mb-2.5 flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <!-- Active Location & Date -->
       <div class="flex items-start gap-2.5">
         <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center text-white">
@@ -351,9 +351,9 @@
         </div>
       </div>
     } @else if (weather(); as data) {
-      <div class="grid flex-1 min-h-0 grid-cols-1 gap-4 xl:grid-cols-12">
+      <div class="grid flex-1 min-h-0 grid-cols-1 gap-3 lg:grid-cols-12">
         <!-- Left Column (7 cols): Hero Banner + Hourly Strip + 7-Day Vertical Cards -->
-        <div class="flex h-full min-h-0 flex-col justify-between gap-3.5 xl:col-span-7">
+        <div class="flex h-full min-h-0 flex-col justify-between gap-2.5 lg:col-span-7">
           <app-weather-sidebar [weather]="data" [unit]="unit()" />
           <app-hourly-chart class="shrink-0" [hourly]="data.hourly" [unit]="unit()" />
           <app-week-forecast
@@ -365,8 +365,9 @@
         </div>
 
         <!-- Right Column (5 cols): Live Conditions + Popular/Recently Searched Tabs + Wind Map -->
-        <main class="h-full min-h-0 xl:col-span-5">
+        <main class="flex h-full min-h-0 flex-col lg:col-span-5">
           <app-weather-details-panel
+            class="flex-1 min-h-0"
             [weather]="data"
             [unit]="unit()"
             [popularCities]="popularCities()"

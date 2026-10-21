@@ -113,7 +113,7 @@ let nextInstanceId = 0;
       class="wi-svg"
       [attr.width]="size()"
       [attr.height]="size()"
-      viewBox="0 0 64 64"
+      viewBox="5 5 54 54"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
@@ -339,7 +339,7 @@ let nextInstanceId = 0;
 export class WeatherIconComponent {
   readonly code = input.required<number>();
   readonly isDay = input<boolean>(true);
-  readonly size = input<number>(48);
+  readonly size = input<number>(54);
 
   readonly uid = `wi-${++nextInstanceId}`;
 

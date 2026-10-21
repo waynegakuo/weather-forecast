@@ -1,20 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { TemperatureUnit, WeatherBundle } from '../../models/weather.types';
-import { backgroundImageForCode } from '../../utils/weather-backgrounds';
+import { backgroundImageForBundle } from '../../utils/weather-backgrounds';
 import {
   buildEditorialNarrative,
   formatTemp,
+  uvRiskMeta,
   weatherFromCode,
 } from '../../utils/weather-code';
+import { WeatherIconComponent } from '../weather-icon/weather-icon.component';
 
 @Component({
   selector: 'app-weather-sidebar',
-  imports: [],
+  imports: [DatePipe, WeatherIconComponent],
   templateUrl: './weather-sidebar.component.html',
   styleUrl: './weather-sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'flex flex-1 min-h-[200px] flex-col',
+    class: 'flex flex-1 min-h-[168px] flex-col',
   },
 })
 export class WeatherSidebarComponent {
@@ -24,6 +27,15 @@ export class WeatherSidebarComponent {
   readonly currentTemp = computed(() =>
     formatTemp(this.weather().current.temperature, this.unit()),
   );
+
+  readonly feelsLikeTemp = computed(() =>
+    formatTemp(this.weather().current.feelsLike, this.unit()),
+  );
+
+  readonly uvBadge = computed(() => {
+    const uv = Math.round(this.weather().current.uvIndex);
+    return `UV ${uv} · ${uvRiskMeta(uv).level}`;
+  });
 
   readonly todayHigh = computed(() => {
     const today = this.weather().daily[0];
@@ -40,10 +52,7 @@ export class WeatherSidebarComponent {
   );
 
   readonly heroPhoto = computed(() =>
-    backgroundImageForCode(
-      this.weather().current.weatherCode,
-      this.weather().current.isDay,
-    ),
+    backgroundImageForBundle(this.weather()),
   );
 
   readonly narrative = computed(() =>

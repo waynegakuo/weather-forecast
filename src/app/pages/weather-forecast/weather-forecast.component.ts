@@ -29,7 +29,7 @@ import {
   WeatherBundle,
 } from '../../models/weather.types';
 import {
-  backgroundImageForCode,
+  backgroundImageForBundle,
   overlayGradientForScene,
   sceneForWeatherCode,
 } from '../../utils/weather-backgrounds';
@@ -131,7 +131,7 @@ export class WeatherForecastComponent {
   readonly isDay = computed(() => this.weather()?.current.isDay ?? true);
 
   readonly backgroundImage = computed(() =>
-    backgroundImageForCode(this.weatherCode(), this.isDay()),
+    backgroundImageForBundle(this.weather()),
   );
 
   readonly sceneOverlay = computed(() =>

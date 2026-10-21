@@ -16,14 +16,14 @@ export interface HourlySlotView {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section
-      class="matte-card rounded-[1.35rem] p-2.5 sm:p-3"
+      class="matte-card rounded-[1.25rem] p-2 sm:p-2.5"
       aria-label="Hourly forecast"
     >
       <div class="hourly-strip flex items-stretch justify-between gap-1 overflow-x-auto no-scrollbar">
         @for (slot of slots(); track slot.index) {
           <button
             type="button"
-            class="flex min-w-[4.1rem] flex-1 flex-col items-center justify-between rounded-2xl px-2 py-2.5 transition-all focus:outline-none"
+            class="flex min-w-[4rem] flex-1 flex-col items-center justify-between rounded-2xl px-2 py-1.5 transition-all focus:outline-none"
             [class.bg-white/[0.06]]="selectedIndex() === slot.index"
             [class.border]="selectedIndex() === slot.index"
             [class.border-white/[0.12]]="selectedIndex() === slot.index"
@@ -43,18 +43,18 @@ export interface HourlySlotView {
             </span>
 
             <!-- Optional Rain Probability + Weather Icon -->
-            <div class="my-2 flex flex-col items-center justify-center">
+            <div class="my-1 flex flex-col items-center justify-center">
               @if (slot.data.precipitationProbability >= 15) {
                 <span class="mb-0.5 text-[10px] font-medium text-sky-400">
                   {{ slot.data.precipitationProbability }}%
                 </span>
               } @else {
-                <span class="mb-0.5 h-[14px]" aria-hidden="true"></span>
+                <span class="mb-0.5 h-[12px]" aria-hidden="true"></span>
               }
               <app-weather-icon
                 [code]="slot.data.weatherCode"
                 [isDay]="slot.data.isDay"
-                [size]="28"
+                [size]="36"
               />
             </div>
 

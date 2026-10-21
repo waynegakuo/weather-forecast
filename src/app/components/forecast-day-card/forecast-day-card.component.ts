@@ -28,6 +28,6 @@ export class ForecastDayCardComponent {
     const active = this.selected()
       ? 'border-white/[0.16] bg-white/[0.075] shadow-md'
       : 'border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.055]';
-    return `animate-fade-up stagger-${stagger} ${active} flex flex-col items-center justify-between rounded-[1.25rem] border px-2 py-3 text-center transition-all cursor-pointer select-none`;
+    return `animate-fade-up stagger-${stagger} ${active} flex flex-col items-center justify-between rounded-[1.2rem] border px-2 py-2.5 text-center transition-all cursor-pointer select-none`;
   });
 }

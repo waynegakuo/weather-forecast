@@ -1,7 +1,7 @@
-<div class="flex h-full min-h-0 flex-col justify-between gap-3.5">
+<div class="flex flex-1 h-full min-h-0 flex-col justify-between gap-2.5">
   <!-- 1. LIVE CONDITIONS CARD (Top Right - Dynamic Data Curve + Smooth Accordion) -->
   <section
-    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5 transition-all duration-300"
+    class="matte-card flex shrink-0 flex-col justify-between rounded-[1.25rem] p-3.5 sm:p-4 transition-all duration-300"
     aria-labelledby="live-conditions-heading"
   >
     <div class="flex items-center justify-between">
@@ -39,13 +39,13 @@
     </div>
 
     <!-- Dynamic Delta & Contextual Status Badges -->
-    <div class="mt-2.5 flex items-center justify-between gap-2">
-      <div class="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.05] px-3 py-1 text-xs text-white/80">
+    <div class="mt-1.5 flex items-center justify-between gap-2">
+      <div class="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.05] px-2.5 py-0.5 text-xs text-white/80">
         <span>{{ liveConditionBadge().deltaText }}</span>
       </div>
 
       <div
-        class="inline-flex items-center rounded-xl border px-3 py-1 text-xs font-medium shadow-sm transition-colors duration-300"
+        class="inline-flex items-center rounded-xl border px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors duration-300"
         [class]="liveConditionBadge().badgeClass"
       >
         {{ liveConditionBadge().statusLabel }}
@@ -54,7 +54,7 @@
 
     <!-- Dynamic Interactive SVG Wave Curve + True Circular Sphere Node -->
     <div
-      class="relative my-3 h-[4.5rem] w-full select-none"
+      class="relative my-1.5 h-12 xl:h-14 w-full select-none"
       (mouseleave)="hoveredWaveIndex.set(null)"
     >
       <svg
@@ -199,7 +199,7 @@
 
   <!-- 2. POPULAR CITIES / RECENTLY SEARCHED TABBED CARD (Middle Right) -->
   <section
-    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5 transition-all duration-300"
+    class="matte-card flex shrink-0 flex-col justify-between rounded-[1.25rem] p-3.5 sm:p-4 transition-all duration-300"
     aria-label="City quick switch"
   >
     <div class="flex flex-wrap items-center justify-between gap-2">
@@ -296,28 +296,28 @@
     </div>
 
     @if (primaryCities().length > 0) {
-      <div class="mt-2.5 flex flex-col">
+      <div class="mt-2 flex flex-col">
         <!-- First 2 Cities -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1.5">
           @for (city of primaryCities(); track city.title) {
             <button
               type="button"
-              class="animate-fade-in flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
+              class="animate-fade-in flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3 py-1.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
               (click)="selectCity.emit(city)"
             >
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2.5">
                 <app-weather-icon
                   [code]="city.weatherCode"
                   [isDay]="city.isDay"
-                  [size]="34"
+                  [size]="38"
                 />
                 <div>
                   <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
-                  <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
+                  <p class="mt-0.5 text-[11px] text-white/45">{{ city.subtitle }}</p>
                 </div>
               </div>
 
-              <span class="text-2xl font-light tracking-tight text-white">
+              <span class="text-xl sm:text-2xl font-light tracking-tight text-white">
                 {{ formatCityTemp(city.temperatureC) }}°
               </span>
             </button>
@@ -329,29 +329,29 @@
           <div
             class="accordion-shell"
             [class.accordion-shell--open]="showAllCities()"
-            [class.mt-2]="showAllCities()"
+            [class.mt-1.5]="showAllCities()"
             [attr.aria-hidden]="!showAllCities()"
           >
-            <div class="accordion-inner flex flex-col gap-2">
+            <div class="accordion-inner flex flex-col gap-1.5">
               @for (city of extraCities(); track city.title) {
                 <button
                   type="button"
-                  class="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
+                  class="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3 py-1.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
                   (click)="selectCity.emit(city)"
                 >
-                  <div class="flex items-center gap-3">
+                  <div class="flex items-center gap-2.5">
                     <app-weather-icon
                       [code]="city.weatherCode"
                       [isDay]="city.isDay"
-                      [size]="34"
+                      [size]="38"
                     />
                     <div>
                       <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
-                      <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
+                      <p class="mt-0.5 text-[11px] text-white/45">{{ city.subtitle }}</p>
                     </div>
                   </div>
 
-                  <span class="text-2xl font-light tracking-tight text-white">
+                  <span class="text-xl sm:text-2xl font-light tracking-tight text-white">
                     {{ formatCityTemp(city.temperatureC) }}°
                   </span>
                 </button>
@@ -380,7 +380,13 @@
 
   <!-- 3. DYNAMIC WIND MAP CARD (Bottom Right - Live Direction & Speed Animated Streamlines) -->
   <section
-    class="wind-map-card relative flex flex-1 min-h-[136px] items-center justify-between overflow-hidden rounded-[1.35rem] border border-white/[0.08] p-4 sm:p-5"
+    class="wind-map-card relative flex flex-1 items-center justify-between overflow-hidden rounded-[1.25rem] border border-white/[0.08] transition-all duration-300 ease-out"
+    [class.min-h-[72px]]="isWindMapCompact()"
+    [class.px-3.5]="isWindMapCompact()"
+    [class.py-2]="isWindMapCompact()"
+    [class.min-h-[112px]]="!isWindMapCompact()"
+    [class.p-3.5]="!isWindMapCompact()"
+    [class.sm:p-4]="!isWindMapCompact()"
     [style.--wind-speed]="windStreamDuration()"
     aria-labelledby="wind-map-heading"
   >
@@ -432,26 +438,106 @@
       </g>
     </svg>
 
-    <!-- Left Live Wind Telemetry Readout -->
-    <div class="relative z-10 flex h-full flex-col justify-between">
+    <!-- Left Live Wind Telemetry Readout (Fluidly Adapts When Accordions Expand) -->
+    <div class="relative z-10 flex h-full flex-col justify-between transition-all duration-300 ease-out">
       <div>
-        <h2 id="wind-map-heading" class="text-sm font-medium text-white/95">Wind Map</h2>
-        <p class="mt-0.5 text-[11px] text-white/45">
+        <div class="flex items-center gap-2">
+          <h2
+            id="wind-map-heading"
+            class="font-medium text-white/95 transition-all duration-300"
+            [class.text-xs]="isWindMapCompact()"
+            [class.text-sm]="!isWindMapCompact()"
+          >
+            Wind Map
+          </h2>
+          @if (isWindMapCompact()) {
+            <span class="rounded-md border border-white/[0.08] bg-white/[0.06] px-1.5 py-0.2 text-[10px] text-sky-300">
+              {{ windIntensityMeta().label }}
+            </span>
+          }
+        </div>
+        <p
+          class="text-white/50 transition-all duration-300"
+          [class.text-[10px]]="isWindMapCompact()"
+          [class.leading-tight]="isWindMapCompact()"
+          [class.mt-0.5]="!isWindMapCompact()"
+          [class.text-xs]="!isWindMapCompact()"
+        >
           Gusts {{ round(current().windGusts) }} km/h · {{ round(current().windDirection) }}° {{ windCompassShort() }}
         </p>
+
+        <!-- Dynamic Beaufort Scale & Wind Force Strip (Fills Middle Space When Open, Collapses Smoothly When Compact) -->
+        <div
+          class="accordion-shell"
+          [class.accordion-shell--open]="!isWindMapCompact()"
+          [class.mt-2]="!isWindMapCompact()"
+          [attr.aria-hidden]="isWindMapCompact()"
+        >
+          <div class="accordion-inner">
+            <div class="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-black/25 px-2.5 py-1 backdrop-blur-md">
+              <!-- 5-Segment Wind Force Meter -->
+              <div class="flex items-end gap-0.5" aria-hidden="true">
+                @for (bar of [1, 2, 3, 4, 5]; track bar) {
+                  <span
+                    class="w-1 rounded-full transition-all duration-300"
+                    [style.height.px]="4 + bar * 2"
+                    [class.bg-sky-400]="bar <= windIntensityMeta().activeBars"
+                    [class.bg-white/15]="bar > windIntensityMeta().activeBars"
+                  ></span>
+                }
+              </div>
+              <span class="text-[11px] font-medium text-white/85">
+                {{ windIntensityMeta().label }}
+              </span>
+              <span class="text-[10px] text-white/45">
+                · Bft {{ windIntensityMeta().beaufort }}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="mt-3">
-        <p class="text-2xl font-medium tracking-tight text-white">
+      <div
+        class="transition-all duration-300"
+        [class.mt-1]="isWindMapCompact()"
+        [class.mt-2]="!isWindMapCompact()"
+      >
+        <p
+          class="tracking-tight text-white transition-all duration-300"
+          [class.text-base]="isWindMapCompact()"
+          [class.font-medium]="isWindMapCompact()"
+          [class.leading-tight]="isWindMapCompact()"
+          [class.text-[clamp(1.65rem,2.4vh+0.5vw,2.35rem)]]="!isWindMapCompact()"
+          [class.font-light]="!isWindMapCompact()"
+          [class.leading-none]="!isWindMapCompact()"
+        >
           {{ round(current().windSpeed) }}
-          <span class="text-base font-normal text-white/80">km/h</span>
+          <span
+            class="font-normal text-white/75 transition-all duration-300"
+            [class.text-xs]="isWindMapCompact()"
+            [class.text-sm]="!isWindMapCompact()"
+          >
+            km/h
+          </span>
         </p>
-        <p class="mt-0.5 text-xs text-white/60">{{ windDirectionFull() }}</p>
+        <p
+          class="text-white/60 transition-all duration-300"
+          [class.text-[10px]]="isWindMapCompact()"
+          [class.leading-tight]="isWindMapCompact()"
+          [class.mt-1]="!isWindMapCompact()"
+          [class.text-xs]="!isWindMapCompact()"
+        >
+          Blowing from {{ windDirectionFull() }}
+        </p>
       </div>
     </div>
 
     <!-- Center-Right Frosted Location Pin + Live Directional Compass Ring -->
-    <div class="relative z-10 mr-4 sm:mr-9 flex items-center justify-center">
+    <div
+      class="relative z-10 mr-4 sm:mr-9 flex items-center justify-center transition-transform duration-300 ease-out"
+      [class.scale-75]="isWindMapCompact()"
+      [class.scale-105]="!isWindMapCompact()"
+    >
       <!-- Rotating Wind Bearing Indicator Ring (0° = North/Top, points where wind blows TOWARDS) -->
       <svg
         class="pointer-events-none absolute h-16 w-16 overflow-visible transition-transform duration-700 ease-out"
