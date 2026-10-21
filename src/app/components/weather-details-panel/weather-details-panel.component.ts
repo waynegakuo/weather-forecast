@@ -4,7 +4,10 @@ import {
   TemperatureUnit,
   WeatherBundle,
 } from '../../models/weather.types';
-import { HighlightsGridComponent } from '../highlights-grid/highlights-grid.component';
+import {
+  CitiesListTab,
+  HighlightsGridComponent,
+} from '../highlights-grid/highlights-grid.component';
 
 @Component({
   selector: 'app-weather-details-panel',
@@ -19,8 +22,12 @@ import { HighlightsGridComponent } from '../highlights-grid/highlights-grid.comp
 export class WeatherDetailsPanelComponent {
   readonly weather = input.required<WeatherBundle>();
   readonly unit = input<TemperatureUnit>('C');
+  readonly popularCities = input<RecentCityWeather[]>([]);
   readonly recentCities = input<RecentCityWeather[]>([]);
+  readonly citiesTab = input<CitiesListTab>('popular');
   readonly showExtendedMetrics = input<boolean>(false);
 
   readonly selectCity = output<RecentCityWeather>();
+  readonly citiesTabChange = output<CitiesListTab>();
+  readonly clearRecent = output<void>();
 }

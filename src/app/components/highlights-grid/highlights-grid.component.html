@@ -189,52 +189,137 @@
     }
   </section>
 
-  <!-- 2. RECENTLY SEARCHED CARD (Middle Right) -->
+  <!-- 2. POPULAR CITIES / RECENTLY SEARCHED TABBED CARD (Middle Right) -->
   <section
     class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5"
-    aria-labelledby="recently-searched-heading"
+    aria-label="City quick switch"
   >
-    <div class="flex items-center justify-between">
-      <h2 id="recently-searched-heading" class="text-sm font-medium text-white/95">
-        Recently Searched
-      </h2>
-      <button
-        type="button"
-        class="inline-flex items-center gap-1 text-xs text-white/60 transition hover:text-white"
-        (click)="showAllRecent.set(!showAllRecent())"
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <!-- Segmented Glassmorphic Pill-Knob Tab Switcher: Popular Cities | Recently Searched -->
+      <div
+        class="cities-tab-track relative grid grid-cols-2 items-center rounded-full p-1 select-none"
+        role="tablist"
       >
-        <span>{{ showAllRecent() ? 'Show Less' : 'See All' }}</span>
-        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
-    </div>
+        <!-- Sliding Glassmorphic Pill Knob -->
+        <span
+          class="cities-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-full transition-transform duration-300 ease-out"
+          [class.translate-x-full]="citiesTab() === 'recent'"
+          [class.translate-x-0]="citiesTab() === 'popular'"
+          aria-hidden="true"
+        ></span>
 
-    <div class="mt-2.5 flex flex-col gap-2">
-      @for (city of visibleRecentCities(); track city.title) {
         <button
           type="button"
-          class="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
-          (click)="selectCity.emit(city)"
+          role="tab"
+          [attr.aria-selected]="citiesTab() === 'popular'"
+          class="relative z-10 flex items-center justify-center rounded-full px-3.5 py-1.5 text-xs transition-colors duration-200 focus:outline-none"
+          [class.font-semibold]="citiesTab() === 'popular'"
+          [class.text-white]="citiesTab() === 'popular'"
+          [class.font-medium]="citiesTab() !== 'popular'"
+          [class.text-white/50]="citiesTab() !== 'popular'"
+          [class.hover:text-white/80]="citiesTab() !== 'popular'"
+          (click)="citiesTabChange.emit('popular')"
         >
-          <div class="flex items-center gap-3">
-            <app-weather-icon
-              [code]="city.weatherCode"
-              [isDay]="city.isDay"
-              [size]="34"
-            />
-            <div>
-              <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
-              <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
-            </div>
-          </div>
-
-          <span class="text-2xl font-light tracking-tight text-white">
-            {{ formatCityTemp(city.temperatureC) }}°
-          </span>
+          Popular Cities
         </button>
-      }
+
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="citiesTab() === 'recent'"
+          class="relative z-10 flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs transition-colors duration-200 focus:outline-none"
+          [class.font-semibold]="citiesTab() === 'recent'"
+          [class.text-white]="citiesTab() === 'recent'"
+          [class.font-medium]="citiesTab() !== 'recent'"
+          [class.text-white/50]="citiesTab() !== 'recent'"
+          [class.hover:text-white/80]="citiesTab() !== 'recent'"
+          (click)="citiesTabChange.emit('recent')"
+        >
+          <span>Recently Searched</span>
+          @if (recentCities().length > 0) {
+            <span
+              class="rounded-full px-1.5 py-0.2 text-[10px] leading-tight transition-colors"
+              [class.bg-white/25]="citiesTab() === 'recent'"
+              [class.text-white]="citiesTab() === 'recent'"
+              [class.bg-white/10]="citiesTab() !== 'recent'"
+              [class.text-white/70]="citiesTab() !== 'recent'"
+            >
+              {{ recentCities().length }}
+            </span>
+          }
+        </button>
+      </div>
+
+      <!-- Right Action: See All / Clear -->
+      <div class="flex items-center gap-2.5">
+        @if (citiesTab() === 'recent' && recentCities().length > 0) {
+          <button
+            type="button"
+            class="text-[11px] text-white/45 transition hover:text-rose-300"
+            (click)="clearRecent.emit()"
+            title="Clear recent search history"
+          >
+            Clear
+          </button>
+        }
+
+        @if (activeTabCities().length > 2) {
+          <button
+            type="button"
+            class="inline-flex items-center gap-1 text-xs text-white/60 transition hover:text-white"
+            (click)="showAllCities.set(!showAllCities())"
+          >
+            <span>{{ showAllCities() ? 'Show Less' : 'See All' }}</span>
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        }
+      </div>
     </div>
+
+    @if (visibleCities().length > 0) {
+      <div class="mt-2.5 flex flex-col gap-2">
+        @for (city of visibleCities(); track city.title) {
+          <button
+            type="button"
+            class="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
+            (click)="selectCity.emit(city)"
+          >
+            <div class="flex items-center gap-3">
+              <app-weather-icon
+                [code]="city.weatherCode"
+                [isDay]="city.isDay"
+                [size]="34"
+              />
+              <div>
+                <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
+                <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
+              </div>
+            </div>
+
+            <span class="text-2xl font-light tracking-tight text-white">
+              {{ formatCityTemp(city.temperatureC) }}°
+            </span>
+          </button>
+        }
+      </div>
+    } @else {
+      <!-- Empty state when Recently Searched tab has no saved history yet -->
+      <div class="mt-2.5 flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.09] bg-white/[0.02] px-4 py-6 text-center">
+        <p class="text-xs font-medium text-white/75">No recent searches yet</p>
+        <p class="mt-1 text-[11px] text-white/45">
+          Cities you search for above will be saved here automatically.
+        </p>
+        <button
+          type="button"
+          class="mt-3 rounded-xl border border-white/[0.1] bg-white/[0.07] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/[0.14]"
+          (click)="citiesTabChange.emit('popular')"
+        >
+          Browse Popular Cities
+        </button>
+      </div>
+    }
   </section>
 
   <!-- 3. DYNAMIC WIND MAP CARD (Bottom Right - Live Direction & Speed Animated Streamlines) -->

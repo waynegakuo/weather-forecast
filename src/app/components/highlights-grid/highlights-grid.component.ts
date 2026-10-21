@@ -21,6 +21,8 @@ import {
 } from '../../utils/weather-code';
 import { WeatherIconComponent } from '../weather-icon/weather-icon.component';
 
+export type CitiesListTab = 'popular' | 'recent';
+
 export interface LiveWavePoint {
   x: number;
   y: number;
@@ -44,12 +46,16 @@ export class HighlightsGridComponent {
   readonly current = input.required<CurrentWeatherView>();
   readonly hourly = input<HourlyForecastView[]>([]);
   readonly unit = input<TemperatureUnit>('C');
+  readonly popularCities = input<RecentCityWeather[]>([]);
   readonly recentCities = input<RecentCityWeather[]>([]);
+  readonly citiesTab = input<CitiesListTab>('popular');
   readonly showExtendedMetrics = input<boolean>(false);
 
   readonly selectCity = output<RecentCityWeather>();
+  readonly citiesTabChange = output<CitiesListTab>();
+  readonly clearRecent = output<void>();
 
-  readonly showAllRecent = signal(false);
+  readonly showAllCities = signal(false);
   readonly showExtraDetails = signal(false);
   readonly hoveredWaveIndex = signal<number | null>(null);
 
@@ -73,16 +79,17 @@ export class HighlightsGridComponent {
     formatTemp(this.current().feelsLike, this.unit()),
   );
 
-  readonly visibleRecentCities = computed(() => {
-    const all = this.recentCities();
-    return this.showAllRecent() ? all.slice(0, 4) : all.slice(0, 2);
+  readonly activeTabCities = computed(() => {
+    return this.citiesTab() === 'recent'
+      ? this.recentCities()
+      : this.popularCities();
   });
 
-  /**
-   * Dynamic Live Conditions Curve:
-   * Uses the next 8 hourly data points (or synthesizes from current telemetry if hourly is empty)
-   * to plot a proportional 1:1 aspect-ratio SVG cubic-bezier curve.
-   */
+  readonly visibleCities = computed(() => {
+    const all = this.activeTabCities();
+    return this.showAllCities() ? all.slice(0, 4) : all.slice(0, 2);
+  });
+
   readonly liveWavePoints = computed<LiveWavePoint[]>(() => {
     const hrs = this.hourly().slice(0, 8);
     const c = this.current();
@@ -226,20 +233,10 @@ export class HighlightsGridComponent {
     };
   });
 
-  /**
-   * Compass bearing the wind is blowing TOWARDS (0° = North/Up, 45° = NE/Top-Right).
-   * Used for the compass ring pointer whose base arrowhead is drawn at the top (0° North).
-   */
   readonly windTargetCompassAngle = computed(() => {
     return (this.current().windDirection + 180) % 360;
   });
 
-  /**
-   * SVG rotation for the horizontal streamlines:
-   * Because the base SVG paths are drawn flowing Left-to-Right (West -> East, which is 90° on a compass),
-   * we subtract 90° from windTargetCompassAngle (equivalent to windDirection + 90°)
-   * so a Southwest (225°) wind rotates by 315° (-45°) and flows from bottom-left (SW) to top-right (NE).
-   */
   readonly windFlowRotation = computed(() => {
     return (this.current().windDirection + 90) % 360;
   });

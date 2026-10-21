@@ -38,8 +38,10 @@ import { WeatherSidebarComponent } from '../../components/weather-sidebar/weathe
 import { HourlyChartComponent } from '../../components/hourly-chart/hourly-chart.component';
 import { WeekForecastComponent } from '../../components/week-forecast/week-forecast.component';
 import { WeatherDetailsPanelComponent } from '../../components/weather-details-panel/weather-details-panel.component';
+import { CitiesListTab } from '../../components/highlights-grid/highlights-grid.component';
 
 export const DEFAULT_CITY = 'Mombasa';
+const RECENT_STORAGE_KEY = 'weather_recent_cities_v1';
 
 export type NavTab = 'home' | 'locations' | 'compass' | 'analytics' | 'settings';
 
@@ -75,6 +77,7 @@ export class WeatherForecastComponent {
   });
 
   readonly activeNav = signal<NavTab>('home');
+  readonly citiesTab = signal<CitiesListTab>('popular');
   readonly unit = signal<TemperatureUnit>('C');
   readonly loading = signal(false);
   readonly locatingGps = signal(false);
@@ -86,40 +89,42 @@ export class WeatherForecastComponent {
   readonly showSuggestions = signal(false);
   private readonly searchQuery$ = new Subject<string>();
 
-  readonly recentCities = signal<RecentCityWeather[]>([
+  readonly popularCities = signal<RecentCityWeather[]>([
     {
-      cityQuery: 'Liverpool',
-      title: 'Liverpool, UK',
+      cityQuery: 'Nairobi',
+      title: 'Nairobi, Kenya',
       subtitle: 'Partly Cloudy',
-      temperatureC: 16,
+      temperatureC: 24,
       weatherCode: 2,
       isDay: true,
     },
     {
-      cityQuery: 'Palermo',
-      title: 'Palermo, Italy',
-      subtitle: 'Rain/Thunder',
-      temperatureC: 19,
-      weatherCode: 95,
+      cityQuery: 'London',
+      title: 'London, UK',
+      subtitle: 'Overcast',
+      temperatureC: 15,
+      weatherCode: 3,
       isDay: true,
     },
     {
-      cityQuery: 'Nairobi',
-      title: 'Nairobi, Kenya',
+      cityQuery: 'Tokyo',
+      title: 'Tokyo, Japan',
       subtitle: 'Mostly Clear',
-      temperatureC: 24,
+      temperatureC: 21,
       weatherCode: 1,
       isDay: true,
     },
     {
-      cityQuery: 'Brooklyn',
-      title: 'Brooklyn, USA',
-      subtitle: 'Overcast',
-      temperatureC: 18,
-      weatherCode: 3,
+      cityQuery: 'New York',
+      title: 'New York, USA',
+      subtitle: 'Clear Sky',
+      temperatureC: 19,
+      weatherCode: 0,
       isDay: true,
     },
   ]);
+
+  readonly recentCities = signal<RecentCityWeather[]>([]);
 
   readonly weatherCode = computed(() => this.weather()?.current.weatherCode);
   readonly isDay = computed(() => this.weather()?.current.isDay ?? true);
@@ -154,8 +159,9 @@ export class WeatherForecastComponent {
       });
 
     afterNextRender(() => {
-      this.fetchWeather(DEFAULT_CITY);
-      this.hydrateInitialRecentCities();
+      this.restoreRecentFromStorage();
+      this.fetchWeather(DEFAULT_CITY, false);
+      this.hydratePopularCities();
     });
   }
 
@@ -214,7 +220,7 @@ export class WeatherForecastComponent {
 
     this.weatherApi.loadPlaceWeather(place).subscribe({
       next: (bundle) => {
-        this.applyNewWeatherBundle(bundle);
+        this.applyNewWeatherBundle(bundle, true);
       },
       error: (err: unknown) => {
         this.loading.set(false);
@@ -223,14 +229,14 @@ export class WeatherForecastComponent {
     });
   }
 
-  selectRecentCity(item: RecentCityWeather): void {
+  selectCityCard(item: RecentCityWeather): void {
     this.showSuggestions.set(false);
     this.cityModel.set({ cityName: item.cityQuery });
     if (item.bundle) {
-      this.applyNewWeatherBundle(item.bundle);
+      this.applyNewWeatherBundle(item.bundle, false);
       return;
     }
-    this.fetchWeather(item.cityQuery);
+    this.fetchWeather(item.cityQuery, false);
   }
 
   search(): void {
@@ -239,7 +245,7 @@ export class WeatherForecastComponent {
       return;
     }
     this.showSuggestions.set(false);
-    this.fetchWeather(city);
+    this.fetchWeather(city, true);
   }
 
   refreshWeather(): void {
@@ -247,11 +253,21 @@ export class WeatherForecastComponent {
       this.weather()?.locationName ||
       this.cityForm.cityName().value().trim() ||
       DEFAULT_CITY;
-    this.fetchWeather(currentCity);
+    this.fetchWeather(currentCity, false);
   }
 
   toggleUnit(): void {
     this.unit.set(this.unit() === 'C' ? 'F' : 'C');
+  }
+
+  clearRecentCities(): void {
+    this.recentCities.set([]);
+    this.citiesTab.set('popular');
+    try {
+      localStorage.removeItem(RECENT_STORAGE_KEY);
+    } catch {
+      // Ignore storage errors
+    }
   }
 
   useMyLocation(): void {
@@ -271,7 +287,7 @@ export class WeatherForecastComponent {
           .subscribe({
             next: (bundle) => {
               this.locatingGps.set(false);
-              this.applyNewWeatherBundle(bundle);
+              this.applyNewWeatherBundle(bundle, false);
             },
             error: (err: unknown) => {
               this.locatingGps.set(false);
@@ -289,13 +305,13 @@ export class WeatherForecastComponent {
     );
   }
 
-  private fetchWeather(city: string): void {
+  private fetchWeather(city: string, recordAsRecent: boolean): void {
     this.loading.set(true);
     this.errorMessage.set(null);
 
     this.weatherApi.loadCityWeather(city).subscribe({
       next: (bundle) => {
-        this.applyNewWeatherBundle(bundle);
+        this.applyNewWeatherBundle(bundle, recordAsRecent);
       },
       error: (err: unknown) => {
         this.loading.set(false);
@@ -304,24 +320,28 @@ export class WeatherForecastComponent {
     });
   }
 
-  private applyNewWeatherBundle(bundle: WeatherBundle): void {
-    const previous = this.weather();
-    if (
-      previous &&
-      previous.locationName.toLowerCase() !== bundle.locationName.toLowerCase()
-    ) {
-      this.upsertRecentCity(previous);
+  private applyNewWeatherBundle(bundle: WeatherBundle, recordAsRecent: boolean): void {
+    if (recordAsRecent) {
+      this.saveToRecentCities(bundle);
+      this.citiesTab.set('recent');
     }
     this.weather.set(bundle);
     this.loading.set(false);
     this.lastUpdatedLabel.set('Just now');
   }
 
-  private upsertRecentCity(bundle: WeatherBundle): void {
+  private saveToRecentCities(bundle: WeatherBundle): void {
     const meta = weatherFromCode(bundle.current.weatherCode);
+    const countryLabel =
+      bundle.countryCode === 'GB'
+        ? 'UK'
+        : bundle.countryCode === 'US'
+          ? 'USA'
+          : bundle.country || bundle.countryCode;
+
     const entry: RecentCityWeather = {
       cityQuery: bundle.locationName,
-      title: `${bundle.locationName}, ${bundle.country || bundle.countryCode}`,
+      title: `${bundle.locationName}${countryLabel ? ', ' + countryLabel : ''}`,
       subtitle: meta.shortLabel,
       temperatureC: bundle.current.temperature,
       weatherCode: bundle.current.weatherCode,
@@ -333,21 +353,82 @@ export class WeatherForecastComponent {
       const filtered = list.filter(
         (c) => c.cityQuery.toLowerCase() !== entry.cityQuery.toLowerCase(),
       );
-      return [entry, ...filtered].slice(0, 5);
+      const updated = [entry, ...filtered].slice(0, 6);
+      this.persistRecentToStorage(updated);
+      return updated;
     });
   }
 
-  private hydrateInitialRecentCities(): void {
-    ['Liverpool', 'Palermo'].forEach((cityQuery) => {
-      this.weatherApi.loadCityWeather(cityQuery).subscribe({
+  private persistRecentToStorage(items: RecentCityWeather[]): void {
+    try {
+      const serializable = items.map(({ cityQuery, title, subtitle, temperatureC, weatherCode, isDay }) => ({
+        cityQuery,
+        title,
+        subtitle,
+        temperatureC,
+        weatherCode,
+        isDay,
+      }));
+      localStorage.setItem(RECENT_STORAGE_KEY, JSON.stringify(serializable));
+    } catch {
+      // Ignore storage quota / privacy mode errors
+    }
+  }
+
+  private restoreRecentFromStorage(): void {
+    try {
+      const raw = localStorage.getItem(RECENT_STORAGE_KEY);
+      if (!raw) {
+        this.citiesTab.set('popular');
+        return;
+      }
+      const parsed = JSON.parse(raw) as RecentCityWeather[];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        this.recentCities.set(parsed);
+        this.citiesTab.set('recent');
+        // Refresh live weather for stored recent cities in background
+        parsed.slice(0, 4).forEach((saved) => {
+          this.weatherApi.loadCityWeather(saved.cityQuery).subscribe({
+            next: (bundle) => {
+              const meta = weatherFromCode(bundle.current.weatherCode);
+              this.recentCities.update((list) => {
+                const updated = list.map((item) =>
+                  item.cityQuery.toLowerCase() === saved.cityQuery.toLowerCase()
+                    ? {
+                        ...item,
+                        subtitle: meta.shortLabel,
+                        temperatureC: bundle.current.temperature,
+                        weatherCode: bundle.current.weatherCode,
+                        isDay: bundle.current.isDay,
+                        bundle,
+                      }
+                    : item,
+                );
+                this.persistRecentToStorage(updated);
+                return updated;
+              });
+            },
+            error: () => {},
+          });
+        });
+      } else {
+        this.citiesTab.set('popular');
+      }
+    } catch {
+      this.citiesTab.set('popular');
+    }
+  }
+
+  private hydratePopularCities(): void {
+    this.popularCities().forEach((preset) => {
+      this.weatherApi.loadCityWeather(preset.cityQuery).subscribe({
         next: (bundle) => {
           const meta = weatherFromCode(bundle.current.weatherCode);
-          this.recentCities.update((list) =>
+          this.popularCities.update((list) =>
             list.map((item) =>
-              item.cityQuery.toLowerCase() === cityQuery.toLowerCase()
+              item.cityQuery.toLowerCase() === preset.cityQuery.toLowerCase()
                 ? {
-                    cityQuery: bundle.locationName,
-                    title: `${bundle.locationName}, ${bundle.countryCode === 'GB' ? 'UK' : bundle.country}`,
+                    ...item,
                     subtitle: meta.shortLabel,
                     temperatureC: bundle.current.temperature,
                     weatherCode: bundle.current.weatherCode,
@@ -358,9 +439,7 @@ export class WeatherForecastComponent {
             ),
           );
         },
-        error: () => {
-          // Keep default fallback entry if offline
-        },
+        error: () => {},
       });
     });
   }

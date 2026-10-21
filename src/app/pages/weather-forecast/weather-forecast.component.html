@@ -13,24 +13,10 @@
 
   <!-- Left Full-Height Vertical Navigation Rail -->
   <aside
-    class="nav-rail relative z-20 flex w-full shrink-0 flex-row items-center justify-between border-b border-white/[0.08] px-5 py-3 lg:h-full lg:w-[5rem] lg:flex-col lg:border-r lg:border-b-0 lg:px-0 lg:py-6"
+    class="nav-rail relative z-20 flex w-full shrink-0 flex-row items-center justify-center border-b border-white/[0.08] px-5 py-3 lg:h-full lg:w-[5rem] lg:flex-col lg:justify-between lg:border-r lg:border-b-0 lg:px-0 lg:py-6"
     aria-label="Primary navigation"
   >
-    <!-- Top Avatar / Station Badge -->
-    <button
-      type="button"
-      class="group relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/[0.08] shadow-md transition hover:border-white/40"
-      (click)="refreshWeather()"
-      title="Active Weather Station"
-    >
-      <img
-        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-        alt="User profile"
-        class="h-full w-full object-cover"
-      />
-    </button>
-
-    <!-- Center Navigation Icons -->
+    <!-- Primary Navigation Icons -->
     <nav class="flex flex-row items-center gap-1.5 lg:flex-col lg:gap-2.5">
       <!-- 1. Home / Dashboard -->
       <button
@@ -339,14 +325,18 @@
           />
         </div>
 
-        <!-- Right Column (5 cols): Live Conditions + Recently Searched + Wind Map -->
+        <!-- Right Column (5 cols): Live Conditions + Popular/Recently Searched Tabs + Wind Map -->
         <main class="h-full min-h-0 xl:col-span-5">
           <app-weather-details-panel
             [weather]="data"
             [unit]="unit()"
+            [popularCities]="popularCities()"
             [recentCities]="recentCities()"
+            [citiesTab]="citiesTab()"
             [showExtendedMetrics]="activeNav() === 'analytics'"
-            (selectCity)="selectRecentCity($event)"
+            (selectCity)="selectCityCard($event)"
+            (citiesTabChange)="citiesTab.set($event)"
+            (clearRecent)="clearRecentCities()"
           />
         </main>
       </div>

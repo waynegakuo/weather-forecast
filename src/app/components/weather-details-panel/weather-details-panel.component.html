@@ -3,8 +3,12 @@
     [current]="weather().current"
     [hourly]="weather().hourly"
     [unit]="unit()"
+    [popularCities]="popularCities()"
     [recentCities]="recentCities()"
+    [citiesTab]="citiesTab()"
     [showExtendedMetrics]="showExtendedMetrics()"
     (selectCity)="selectCity.emit($event)"
+    (citiesTabChange)="citiesTabChange.emit($event)"
+    (clearRecent)="clearRecent.emit()"
   />
 </div>
