@@ -226,8 +226,22 @@ export class HighlightsGridComponent {
     };
   });
 
-  readonly windFlowRotation = computed(() => {
+  /**
+   * Compass bearing the wind is blowing TOWARDS (0° = North/Up, 45° = NE/Top-Right).
+   * Used for the compass ring pointer whose base arrowhead is drawn at the top (0° North).
+   */
+  readonly windTargetCompassAngle = computed(() => {
     return (this.current().windDirection + 180) % 360;
+  });
+
+  /**
+   * SVG rotation for the horizontal streamlines:
+   * Because the base SVG paths are drawn flowing Left-to-Right (West -> East, which is 90° on a compass),
+   * we subtract 90° from windTargetCompassAngle (equivalent to windDirection + 90°)
+   * so a Southwest (225°) wind rotates by 315° (-45°) and flows from bottom-left (SW) to top-right (NE).
+   */
+  readonly windFlowRotation = computed(() => {
+    return (this.current().windDirection + 90) % 360;
   });
 
   readonly windStreamDuration = computed(() => {

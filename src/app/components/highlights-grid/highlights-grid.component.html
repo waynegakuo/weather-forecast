@@ -311,10 +311,10 @@
 
     <!-- Center-Right Frosted Location Pin + Live Directional Compass Ring -->
     <div class="relative z-10 mr-4 sm:mr-9 flex items-center justify-center">
-      <!-- Rotating Wind Bearing Indicator Ring -->
+      <!-- Rotating Wind Bearing Indicator Ring (0° = North/Top, points where wind blows TOWARDS) -->
       <svg
         class="pointer-events-none absolute h-16 w-16 overflow-visible transition-transform duration-700 ease-out"
-        [style.transform]="'rotate(' + windFlowRotation() + 'deg)'"
+        [style.transform]="'rotate(' + windTargetCompassAngle() + 'deg)'"
         viewBox="0 0 64 64"
         aria-hidden="true"
       >
