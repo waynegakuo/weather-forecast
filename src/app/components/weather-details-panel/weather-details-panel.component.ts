@@ -30,4 +30,5 @@ export class WeatherDetailsPanelComponent {
   readonly selectCity = output<RecentCityWeather>();
   readonly citiesTabChange = output<CitiesListTab>();
   readonly clearRecent = output<void>();
+  readonly toggleExtendedMetrics = output<void>();
 }

@@ -54,9 +54,9 @@ export class HighlightsGridComponent {
   readonly selectCity = output<RecentCityWeather>();
   readonly citiesTabChange = output<CitiesListTab>();
   readonly clearRecent = output<void>();
+  readonly toggleExtendedMetrics = output<void>();
 
   readonly showAllCities = signal(false);
-  readonly showExtraDetails = signal(false);
   readonly hoveredWaveIndex = signal<number | null>(null);
 
   readonly waveWidth = 360;

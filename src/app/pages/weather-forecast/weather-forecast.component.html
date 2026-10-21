@@ -78,11 +78,12 @@
       <button
         type="button"
         class="flex h-11 w-11 items-center justify-center rounded-2xl transition-all"
-        [class.bg-white/[0.12]]="activeNav() === 'analytics'"
-        [class.text-white]="activeNav() === 'analytics'"
-        [class.text-white/45]="activeNav() !== 'analytics'"
-        [class.hover:bg-white/[0.06]]="activeNav() !== 'analytics'"
-        [class.hover:text-white/80]="activeNav() !== 'analytics'"
+        [class.bg-white/[0.12]]="extendedMetricsOpen()"
+        [class.text-white]="extendedMetricsOpen()"
+        [class.text-white/45]="!extendedMetricsOpen()"
+        [class.hover:bg-white/[0.06]]="!extendedMetricsOpen()"
+        [class.hover:text-white/80]="!extendedMetricsOpen()"
+        [attr.aria-expanded]="extendedMetricsOpen()"
         (click)="onNavClick('analytics')"
         title="Toggle extended metrics"
         aria-label="Toggle extended metrics"
@@ -333,10 +334,11 @@
             [popularCities]="popularCities()"
             [recentCities]="recentCities()"
             [citiesTab]="citiesTab()"
-            [showExtendedMetrics]="activeNav() === 'analytics'"
+            [showExtendedMetrics]="extendedMetricsOpen()"
             (selectCity)="selectCityCard($event)"
             (citiesTabChange)="citiesTab.set($event)"
             (clearRecent)="clearRecentCities()"
+            (toggleExtendedMetrics)="toggleExtendedMetrics()"
           />
         </main>
       </div>

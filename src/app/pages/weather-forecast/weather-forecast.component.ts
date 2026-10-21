@@ -77,6 +77,7 @@ export class WeatherForecastComponent {
   });
 
   readonly activeNav = signal<NavTab>('home');
+  readonly extendedMetricsOpen = signal(false);
   readonly citiesTab = signal<CitiesListTab>('popular');
   readonly unit = signal<TemperatureUnit>('C');
   readonly loading = signal(false);
@@ -193,10 +194,23 @@ export class WeatherForecastComponent {
       this.toggleUnit();
       return;
     }
+    if (tab === 'analytics') {
+      this.toggleExtendedMetrics();
+      return;
+    }
+    if (tab === 'home') {
+      this.extendedMetricsOpen.set(false);
+    }
     this.activeNav.set(tab);
     if (tab === 'locations') {
       this.openSearch();
     }
+  }
+
+  toggleExtendedMetrics(): void {
+    const next = !this.extendedMetricsOpen();
+    this.extendedMetricsOpen.set(next);
+    this.activeNav.set(next ? 'analytics' : 'home');
   }
 
   openSearch(): void {
