@@ -1,6 +1,7 @@
 <div class="flex flex-1 h-full min-h-0 flex-col justify-between gap-2.5">
   <!-- 1. LIVE CONDITIONS CARD (Top Right - Dynamic Data Curve + Smooth Accordion) -->
   <section
+    id="live-conditions-section"
     class="matte-card flex shrink-0 flex-col justify-between rounded-[1.25rem] p-3.5 sm:p-4 transition-all duration-300"
     aria-labelledby="live-conditions-heading"
   >
@@ -197,6 +198,7 @@
 
   <!-- 2. POPULAR CITIES / RECENTLY SEARCHED TABBED CARD (Middle Right) -->
   <section
+    id="cities-section"
     class="matte-card flex shrink-0 flex-col justify-between rounded-[1.25rem] p-3.5 sm:p-4 transition-all duration-300"
     aria-label="City quick switch"
   >
@@ -360,6 +362,7 @@
 
   <!-- 3. DYNAMIC WIND MAP CARD (Bottom Right - Live Direction & Speed Animated Streamlines) -->
   <section
+    id="wind-map-section"
     class="wind-map-card relative flex flex-1 items-center justify-between gap-3 overflow-hidden rounded-[1.25rem] border border-white/[0.08] transition-all duration-300 ease-out"
     [class.wind-map-card--compact]="isWindMapCompact()"
     [style.--wind-speed]="windStreamDuration()"

@@ -200,9 +200,18 @@ export class WeatherForecastComponent {
     }
     if (tab === 'home') {
       this.extendedMetricsOpen.set(false);
+      this.activeNav.set('home');
+      this.scrollToSection('dashboard-top-header', 'start');
+      return;
+    }
+    if (tab === 'compass') {
+      this.activeNav.set('compass');
+      this.scrollToSection('wind-map-section', 'center');
+      return;
     }
     this.activeNav.set(tab);
     if (tab === 'locations') {
+      this.scrollToSection('dashboard-top-header', 'start');
       this.openSearch();
     }
   }
@@ -211,6 +220,21 @@ export class WeatherForecastComponent {
     const next = !this.extendedMetricsOpen();
     this.extendedMetricsOpen.set(next);
     this.activeNav.set(next ? 'analytics' : 'home');
+    this.scrollToSection('live-conditions-section', 'center');
+  }
+
+  private scrollToSection(sectionId: string, block: ScrollLogicalPosition = 'start'): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    setTimeout(() => {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block });
+      } else if (block === 'start' && typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 60);
   }
 
   openSearch(): void {
@@ -246,6 +270,7 @@ export class WeatherForecastComponent {
   selectCityCard(item: RecentCityWeather): void {
     this.showSuggestions.set(false);
     this.cityModel.set({ cityName: item.cityQuery });
+    this.scrollToSection('dashboard-top-header', 'start');
     if (item.bundle) {
       this.applyNewWeatherBundle(item.bundle, false);
       return;
