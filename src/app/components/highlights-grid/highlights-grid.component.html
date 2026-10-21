@@ -1,7 +1,7 @@
 <div class="flex h-full min-h-0 flex-col justify-between gap-3.5">
-  <!-- 1. LIVE CONDITIONS CARD (Top Right - Dynamic Data Curve) -->
+  <!-- 1. LIVE CONDITIONS CARD (Top Right - Dynamic Data Curve + Smooth Accordion) -->
   <section
-    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5"
+    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5 transition-all duration-300"
     aria-labelledby="live-conditions-heading"
   >
     <div class="flex items-center justify-between">
@@ -10,7 +10,7 @@
           Live Conditions
         </h2>
         @if (hoveredWaveIndex() !== null) {
-          <span class="rounded-md bg-white/[0.08] px-2 py-0.5 text-[11px] text-white/80">
+          <span class="rounded-md bg-white/[0.08] px-2 py-0.5 text-[11px] text-white/80 animate-fade-in">
             {{ activeWaveDot().label }} · {{ formatCityTemp(activeWaveDot().tempC) }}°{{ unit() }}
           </span>
         }
@@ -25,7 +25,7 @@
         [attr.aria-expanded]="showExtendedMetrics()"
       >
         <svg
-          class="h-4 w-4 transition-transform duration-200"
+          class="h-4 w-4 transition-transform duration-300 ease-out"
           [class.rotate-90]="showExtendedMetrics()"
           viewBox="0 0 24 24"
           fill="none"
@@ -45,7 +45,7 @@
       </div>
 
       <div
-        class="inline-flex items-center rounded-xl border px-3 py-1 text-xs font-medium shadow-sm transition-colors"
+        class="inline-flex items-center rounded-xl border px-3 py-1 text-xs font-medium shadow-sm transition-colors duration-300"
         [class]="liveConditionBadge().badgeClass"
       >
         {{ liveConditionBadge().statusLabel }}
@@ -167,43 +167,50 @@
       </div>
     </div>
 
-    <!-- Expandable Extended Telemetry Drawer (Sunrise, Sunset, UV, Feels Like) -->
-    @if (showExtendedMetrics()) {
-      <div class="mt-3 grid grid-cols-4 gap-2 border-t border-white/[0.08] pt-3">
-        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
-          <p class="text-[10px] text-white/45">Feels Like</p>
-          <p class="mt-0.5 text-xs font-medium text-white">{{ feelsLikeTemp() }}°{{ unit() }}</p>
-        </div>
-        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
-          <p class="text-[10px] text-white/45">UV Index</p>
-          <p class="mt-0.5 text-xs font-medium text-white">{{ round(current().uvIndex) }} · {{ uvMeta().level }}</p>
-        </div>
-        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
-          <p class="text-[10px] text-white/45">Sunrise</p>
-          <p class="mt-0.5 text-xs font-medium text-white">{{ current().sunrise | date: 'h:mm a' }}</p>
-        </div>
-        <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
-          <p class="text-[10px] text-white/45">Sunset</p>
-          <p class="mt-0.5 text-xs font-medium text-white">{{ current().sunset | date: 'h:mm a' }}</p>
+    <!-- Smooth CSS Grid Accordion Drawer for Extended Telemetry (Sunrise, Sunset, UV, Feels Like) -->
+    <div
+      class="accordion-shell"
+      [class.accordion-shell--open]="showExtendedMetrics()"
+      [class.mt-3]="showExtendedMetrics()"
+      [attr.aria-hidden]="!showExtendedMetrics()"
+    >
+      <div class="accordion-inner">
+        <div class="grid grid-cols-4 gap-2 border-t border-white/[0.08] pt-3">
+          <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+            <p class="text-[10px] text-white/45">Feels Like</p>
+            <p class="mt-0.5 text-xs font-medium text-white">{{ feelsLikeTemp() }}°{{ unit() }}</p>
+          </div>
+          <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+            <p class="text-[10px] text-white/45">UV Index</p>
+            <p class="mt-0.5 text-xs font-medium text-white">{{ round(current().uvIndex) }} · {{ uvMeta().level }}</p>
+          </div>
+          <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+            <p class="text-[10px] text-white/45">Sunrise</p>
+            <p class="mt-0.5 text-xs font-medium text-white">{{ current().sunrise | date: 'h:mm a' }}</p>
+          </div>
+          <div class="rounded-xl border border-white/[0.06] bg-white/[0.03] p-2">
+            <p class="text-[10px] text-white/45">Sunset</p>
+            <p class="mt-0.5 text-xs font-medium text-white">{{ current().sunset | date: 'h:mm a' }}</p>
+          </div>
         </div>
       </div>
-    }
+    </div>
   </section>
 
   <!-- 2. POPULAR CITIES / RECENTLY SEARCHED TABBED CARD (Middle Right) -->
   <section
-    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5"
+    class="matte-card flex flex-col justify-between rounded-[1.35rem] p-4 sm:p-5 transition-all duration-300"
     aria-label="City quick switch"
   >
     <div class="flex flex-wrap items-center justify-between gap-2">
       <!-- Segmented Glassmorphic Pill-Knob Tab Switcher: Popular Cities | Recently Searched -->
       <div
-        class="cities-tab-track relative grid grid-cols-2 items-center rounded-full p-1 select-none"
+        class="glass-tab-track relative grid grid-cols-2 items-center rounded-full p-1 select-none"
         role="tablist"
       >
         <!-- Sliding Glassmorphic Pill Knob -->
         <span
-          class="cities-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-full transition-transform duration-300 ease-out"
+          class="glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-full transition-transform duration-300 ease-out"
           [class.translate-x-full]="citiesTab() === 'recent'"
           [class.translate-x-0]="citiesTab() === 'popular'"
           aria-hidden="true"
@@ -264,14 +271,23 @@
           </button>
         }
 
-        @if (activeTabCities().length > 2) {
+        @if (extraCities().length > 0) {
           <button
             type="button"
             class="inline-flex items-center gap-1 text-xs text-white/60 transition hover:text-white"
+            [attr.aria-expanded]="showAllCities()"
             (click)="showAllCities.set(!showAllCities())"
           >
             <span>{{ showAllCities() ? 'Show Less' : 'See All' }}</span>
-            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <svg
+              class="h-3.5 w-3.5 transition-transform duration-300 ease-out"
+              [class.rotate-90]="showAllCities()"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
               <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
@@ -279,35 +295,74 @@
       </div>
     </div>
 
-    @if (visibleCities().length > 0) {
-      <div class="mt-2.5 flex flex-col gap-2">
-        @for (city of visibleCities(); track city.title) {
-          <button
-            type="button"
-            class="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
-            (click)="selectCity.emit(city)"
-          >
-            <div class="flex items-center gap-3">
-              <app-weather-icon
-                [code]="city.weatherCode"
-                [isDay]="city.isDay"
-                [size]="34"
-              />
-              <div>
-                <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
-                <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
+    @if (primaryCities().length > 0) {
+      <div class="mt-2.5 flex flex-col">
+        <!-- First 2 Cities -->
+        <div class="flex flex-col gap-2">
+          @for (city of primaryCities(); track city.title) {
+            <button
+              type="button"
+              class="animate-fade-in flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
+              (click)="selectCity.emit(city)"
+            >
+              <div class="flex items-center gap-3">
+                <app-weather-icon
+                  [code]="city.weatherCode"
+                  [isDay]="city.isDay"
+                  [size]="34"
+                />
+                <div>
+                  <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
+                  <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
+                </div>
               </div>
-            </div>
 
-            <span class="text-2xl font-light tracking-tight text-white">
-              {{ formatCityTemp(city.temperatureC) }}°
-            </span>
-          </button>
+              <span class="text-2xl font-light tracking-tight text-white">
+                {{ formatCityTemp(city.temperatureC) }}°
+              </span>
+            </button>
+          }
+        </div>
+
+        <!-- Smooth Expandable Accordion for Additional Cities ("See All") -->
+        @if (extraCities().length > 0) {
+          <div
+            class="accordion-shell"
+            [class.accordion-shell--open]="showAllCities()"
+            [class.mt-2]="showAllCities()"
+            [attr.aria-hidden]="!showAllCities()"
+          >
+            <div class="accordion-inner flex flex-col gap-2">
+              @for (city of extraCities(); track city.title) {
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.04] px-3.5 py-2.5 text-left transition hover:border-white/[0.14] hover:bg-white/[0.075] focus:outline-none"
+                  (click)="selectCity.emit(city)"
+                >
+                  <div class="flex items-center gap-3">
+                    <app-weather-icon
+                      [code]="city.weatherCode"
+                      [isDay]="city.isDay"
+                      [size]="34"
+                    />
+                    <div>
+                      <p class="text-sm font-medium leading-tight text-white">{{ city.title }}</p>
+                      <p class="mt-0.5 text-xs text-white/45">{{ city.subtitle }}</p>
+                    </div>
+                  </div>
+
+                  <span class="text-2xl font-light tracking-tight text-white">
+                    {{ formatCityTemp(city.temperatureC) }}°
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
         }
       </div>
     } @else {
       <!-- Empty state when Recently Searched tab has no saved history yet -->
-      <div class="mt-2.5 flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.09] bg-white/[0.02] px-4 py-6 text-center">
+      <div class="animate-fade-in mt-2.5 flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.09] bg-white/[0.02] px-4 py-6 text-center">
         <p class="text-xs font-medium text-white/75">No recent searches yet</p>
         <p class="mt-1 text-[11px] text-white/45">
           Cities you search for above will be saved here automatically.

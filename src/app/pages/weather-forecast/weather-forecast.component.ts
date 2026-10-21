@@ -274,6 +274,10 @@ export class WeatherForecastComponent {
     this.unit.set(this.unit() === 'C' ? 'F' : 'C');
   }
 
+  setUnit(unit: TemperatureUnit): void {
+    this.unit.set(unit);
+  }
+
   clearRecentCities(): void {
     this.recentCities.set([]);
     this.citiesTab.set('popular');

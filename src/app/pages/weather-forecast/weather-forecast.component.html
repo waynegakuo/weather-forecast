@@ -216,7 +216,7 @@
             <!-- City Autocomplete Suggestions Dropdown -->
             @if (showSuggestions() && suggestions().length > 0) {
               <div
-                class="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-2xl border border-white/[0.14] bg-[#1c1d22]/95 p-1.5 shadow-2xl backdrop-blur-2xl"
+                class="animate-dropdown-in absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-2xl border border-white/[0.14] bg-[#1c1d22]/95 p-1.5 shadow-2xl backdrop-blur-2xl"
               >
                 <div class="flex items-center justify-between px-3 py-1">
                   <span class="text-[10px] font-medium text-white/45">Select location</span>
@@ -277,14 +277,52 @@
           </svg>
         </button>
 
-        <!-- Clean Rounded Unit Switcher Button -->
-        <button
-          type="button"
-          class="shrink-0 rounded-xl border border-white/[0.11] bg-black/25 px-4 py-2 text-xs font-medium text-white backdrop-blur-md transition hover:border-white/25 hover:bg-white/[0.14]"
-          (click)="toggleUnit()"
+        <!-- Segmented Glassmorphic Pill-Knob Unit Switcher (°C | °F) -->
+        <div
+          class="glass-tab-track relative grid shrink-0 grid-cols-2 items-center rounded-full p-1 select-none"
+          role="tablist"
+          aria-label="Temperature unit"
         >
-          Unit: °{{ unit() }}
-        </button>
+          <!-- Sliding Glassmorphic Pill Knob -->
+          <span
+            class="glass-tab-knob pointer-events-none absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-full transition-transform duration-300 ease-out"
+            [class.translate-x-full]="unit() === 'F'"
+            [class.translate-x-0]="unit() === 'C'"
+            aria-hidden="true"
+          ></span>
+
+          <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="unit() === 'C'"
+            class="relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs transition-colors duration-200 focus:outline-none"
+            [class.font-semibold]="unit() === 'C'"
+            [class.text-white]="unit() === 'C'"
+            [class.font-medium]="unit() !== 'C'"
+            [class.text-white/50]="unit() !== 'C'"
+            [class.hover:text-white/80]="unit() !== 'C'"
+            (click)="setUnit('C')"
+            title="Celsius (°C)"
+          >
+            °C
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="unit() === 'F'"
+            class="relative z-10 flex items-center justify-center rounded-full px-3 py-1 text-xs transition-colors duration-200 focus:outline-none"
+            [class.font-semibold]="unit() === 'F'"
+            [class.text-white]="unit() === 'F'"
+            [class.font-medium]="unit() !== 'F'"
+            [class.text-white/50]="unit() !== 'F'"
+            [class.hover:text-white/80]="unit() !== 'F'"
+            (click)="setUnit('F')"
+            title="Fahrenheit (°F)"
+          >
+            °F
+          </button>
+        </div>
       </div>
     </header>
 

@@ -85,9 +85,12 @@ export class HighlightsGridComponent {
       : this.popularCities();
   });
 
-  readonly visibleCities = computed(() => {
-    const all = this.activeTabCities();
-    return this.showAllCities() ? all.slice(0, 4) : all.slice(0, 2);
+  readonly primaryCities = computed(() => {
+    return this.activeTabCities().slice(0, 2);
+  });
+
+  readonly extraCities = computed(() => {
+    return this.activeTabCities().slice(2, 4);
   });
 
   readonly liveWavePoints = computed<LiveWavePoint[]>(() => {
