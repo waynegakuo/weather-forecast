@@ -51,14 +51,14 @@
       </div>
     </div>
 
-    <!-- Dynamic Interactive SVG Wave Curve -->
+    <!-- Dynamic Interactive SVG Wave Curve + True Circular Sphere Node -->
     <div
-      class="relative my-2"
+      class="relative my-3 h-[4.5rem] w-full select-none"
       (mouseleave)="hoveredWaveIndex.set(null)"
     >
       <svg
-        viewBox="0 0 320 56"
-        class="h-14 w-full overflow-visible"
+        [attr.viewBox]="'0 0 ' + waveWidth + ' ' + waveHeight"
+        class="h-full w-full overflow-visible"
         preserveAspectRatio="none"
         aria-hidden="true"
       >
@@ -69,44 +69,48 @@
             <stop offset="76%" stop-color="#a855f7" />
             <stop offset="100%" stop-color="#f97316" />
           </linearGradient>
-          <linearGradient id="liveWaveGlow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#6366f1" stop-opacity="0.16" />
+          <linearGradient id="liveWaveArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#6366f1" stop-opacity="0.14" />
             <stop offset="100%" stop-color="#6366f1" stop-opacity="0" />
           </linearGradient>
         </defs>
 
-        <!-- Dynamic Spline Stroke -->
+        <!-- Subtle Ambient Area Glow under Wave -->
+        @if (liveWaveAreaPath()) {
+          <path
+            [attr.d]="liveWaveAreaPath()"
+            fill="url(#liveWaveArea)"
+            class="transition-all duration-500"
+          />
+        }
+
+        <!-- Dynamic Spline Stroke with non-scaling-stroke so line thickness never distorts -->
         <path
           [attr.d]="liveWavePath()"
           fill="none"
           stroke="url(#liveWaveStroke)"
-          stroke-width="2.5"
+          stroke-width="2.75"
           stroke-linecap="round"
+          vector-effect="non-scaling-stroke"
           class="transition-all duration-500"
-        />
-
-        <!-- Dynamic White Ring Indicator Node -->
-        <circle
-          [attr.cx]="activeWaveDot().x"
-          [attr.cy]="activeWaveDot().y"
-          r="8"
-          fill="rgba(255,255,255,0.12)"
-          class="transition-all duration-300"
-        />
-        <circle
-          [attr.cx]="activeWaveDot().x"
-          [attr.cy]="activeWaveDot().y"
-          r="4.5"
-          fill="#222327"
-          stroke="#ffffff"
-          stroke-width="2.5"
-          class="transition-all duration-300"
         />
       </svg>
 
+      <!-- Perfectly Round HTML/CSS Spherical Node (Never Stretched by SVG Aspect Ratio) -->
+      <span
+        class="pointer-events-none absolute z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/12 transition-all duration-300 ease-out"
+        [style.left.%]="activeWaveDot().xPercent"
+        [style.top.%]="activeWaveDot().yPercent"
+        aria-hidden="true"
+      >
+        <span
+          class="h-3.5 w-3.5 rounded-full border-[2.5px] border-white bg-[#202126] shadow-[0_0_10px_rgba(255,255,255,0.65)]"
+        ></span>
+      </span>
+
       <!-- Invisible Hover Scrub Columns over the Wave -->
       <div
-        class="absolute inset-0 grid"
+        class="absolute inset-0 z-20 grid"
         [style.grid-template-columns]="'repeat(' + liveWavePoints().length + ', minmax(0, 1fr))'"
       >
         @for (pt of liveWavePoints(); track $index; let idx = $index) {

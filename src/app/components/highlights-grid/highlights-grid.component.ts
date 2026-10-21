@@ -24,6 +24,8 @@ import { WeatherIconComponent } from '../weather-icon/weather-icon.component';
 export interface LiveWavePoint {
   x: number;
   y: number;
+  xPercent: number;
+  yPercent: number;
   tempC: number;
   label: string;
 }
@@ -51,6 +53,9 @@ export class HighlightsGridComponent {
   readonly showExtraDetails = signal(false);
   readonly hoveredWaveIndex = signal<number | null>(null);
 
+  readonly waveWidth = 360;
+  readonly waveHeight = 72;
+
   readonly windDirectionFull = computed(() =>
     fullCompassDirection(this.current().windDirection),
   );
@@ -76,16 +81,16 @@ export class HighlightsGridComponent {
   /**
    * Dynamic Live Conditions Curve:
    * Uses the next 8 hourly data points (or synthesizes from current telemetry if hourly is empty)
-   * to plot a live SVG cubic-bezier curve and position the indicator node dynamically.
+   * to plot a proportional 1:1 aspect-ratio SVG cubic-bezier curve.
    */
   readonly liveWavePoints = computed<LiveWavePoint[]>(() => {
     const hrs = this.hourly().slice(0, 8);
     const c = this.current();
-    const width = 320;
-    const height = 56;
-    const padX = 8;
-    const topY = 10;
-    const bottomY = height - 8;
+    const width = this.waveWidth;
+    const height = this.waveHeight;
+    const padX = 14;
+    const topY = 14;
+    const bottomY = height - 14;
 
     const rawTemps =
       hrs.length >= 4
@@ -116,6 +121,8 @@ export class HighlightsGridComponent {
       return {
         x: Math.round(x * 10) / 10,
         y: Math.round(y * 10) / 10,
+        xPercent: Math.round((x / width) * 1000) / 10,
+        yPercent: Math.round((y / height) * 1000) / 10,
         tempC: t,
         label: labels[i] ?? '',
       };
@@ -135,16 +142,31 @@ export class HighlightsGridComponent {
     return d;
   });
 
+  readonly liveWaveAreaPath = computed(() => {
+    const pts = this.liveWavePoints();
+    const line = this.liveWavePath();
+    if (!line || pts.length < 2) return '';
+    const first = pts[0];
+    const last = pts[pts.length - 1];
+    return `${line} L ${last.x} ${this.waveHeight} L ${first.x} ${this.waveHeight} Z`;
+  });
+
   readonly activeWaveDot = computed<LiveWavePoint>(() => {
     const pts = this.liveWavePoints();
     if (!pts.length) {
-      return { x: 160, y: 28, tempC: this.current().temperature, label: 'Now' };
+      return {
+        x: 180,
+        y: 36,
+        xPercent: 50,
+        yPercent: 50,
+        tempC: this.current().temperature,
+        label: 'Now',
+      };
     }
     const hovered = this.hoveredWaveIndex();
     if (hovered !== null && pts[hovered]) {
       return pts[hovered];
     }
-    // Position marker at peak or current thermal inflection point
     const c = this.current();
     const targetIdx = Math.min(
       pts.length - 1,
@@ -166,7 +188,7 @@ export class HighlightsGridComponent {
     }
 
     const arrow = trendPct >= 0 ? '↑' : '↓';
-    const absVal = Math.max(1.2, Math.abs(trendPct) + (c.humidity * 0.18));
+    const absVal = Math.max(1.2, Math.abs(trendPct) + c.humidity * 0.18);
     const deltaText = `${arrow} ${absVal.toFixed(1)}%`;
 
     if (c.weatherCode >= 95 || c.windSpeed >= 40) {
@@ -204,18 +226,10 @@ export class HighlightsGridComponent {
     };
   });
 
-  /**
-   * Dynamic Wind Map Telemetry:
-   * Wind direction in meteorology is the direction wind blows FROM.
-   * So the flow vector rotation is (windDirection + 180) % 360.
-   */
   readonly windFlowRotation = computed(() => {
     return (this.current().windDirection + 180) % 360;
   });
 
-  /**
-   * Faster CSS streamline animation when wind speed is higher.
-   */
   readonly windStreamDuration = computed(() => {
     const speed = Math.max(1, this.current().windSpeed);
     const seconds = Math.max(1.1, Math.min(7.5, 18 / Math.sqrt(speed)));
